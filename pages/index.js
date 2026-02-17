@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 const API = process.env.NEXT_PUBLIC_API_BASE;
 
+console.log("API BASE:", API);
+
 export default function Home() {
   const [feed, setFeed] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,10 +18,10 @@ export default function Home() {
       return;
     }
 
-    fetch(`${API}/feed`)
+    fetch(`${API}/posts`)
       .then(res => {
         if (!res.ok) {
-          throw new Error("Failed to fetch feed");
+          throw new Error("Failed to fetch posts");
         }
         return res.json();
       })
@@ -65,9 +67,9 @@ export default function Home() {
             <div key={post.id} style={card}>
               <h3>{post.headline}</h3>
 
-              {post.summary && (
+              {post.description && (
                 <p style={desc}>
-                  {post.summary.slice(0, 150)}...
+                  {post.description.slice(0, 150)}...
                 </p>
               )}
 
