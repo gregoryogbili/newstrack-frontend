@@ -10,23 +10,33 @@ export default function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!API) return;
+    if (!API) {
+      setError("API base URL not configured.");
+      setLoading(false);
+      return;
+    }
 
     fetch(`${API}/posts`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch posts");
+        }
+        return res.json();
+      })
       .then(data => {
-        setFeed(data);
+        setFeed(data.slice(0, 12));
         setLoading(false);
       })
-      .catch(() => {
-        setError("Failed to load news.");
+      .catch(err => {
+        console.error("Fetch error:", err);
+        setError("Unable to load news at the moment.");
         setLoading(false);
       });
   }, []);
 
   return (
     <div style={container}>
-      
+
       {/* NAVBAR */}
       <header style={header}>
         <div style={logoWrap}>
@@ -44,35 +54,38 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* PAGE TITLE */}
       <h2 style={sectionTitle}>Latest News</h2>
 
       {loading && <p>Loading latest stories...</p>}
       {error && <p style={{color:"red"}}>{error}</p>}
 
-      {/* NEWS GRID */}
-      <div style={grid}>
-        {feed.map(post => (
-          <div key={post.id} style={card}>
-            <h3>{post.headline}</h3>
-            {post.description && (
-              <p style={desc}>{post.description.slice(0,150)}...</p>
-            )}
-            {post.source_url && (
-              <a 
-                href={post.source_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={readMore}
-              >
-                Read Full Article →
-              </a>
-            )}
-          </div>
-        ))}
-      </div>
+      {!loading && !error && (
+        <div style={grid}>
+          {feed.map(post => (
+            <div key={post.id} style={card}>
+              <h3>{post.headline}</h3>
 
-      {/* FOOTER */}
+              {post.description && (
+                <p style={desc}>
+                  {post.description.slice(0, 150)}...
+                </p>
+              )}
+
+              {post.source_url && (
+                <a 
+                  href={post.source_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={readMore}
+                >
+                  Read Full Article →
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       <footer style={footer}>
         © 2026 Geno Intelligentia Limited, United Kingdom
       </footer>
