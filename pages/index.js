@@ -16,10 +16,10 @@ export default function Home() {
       return;
     }
 
-    fetch(`${API}/posts`)
+    fetch(`${API}/feed`)
       .then(res => {
         if (!res.ok) {
-          throw new Error("Failed to fetch posts");
+          throw new Error("Failed to fetch feed");
         }
         return res.json();
       })
@@ -65,9 +65,9 @@ export default function Home() {
             <div key={post.id} style={card}>
               <h3>{post.headline}</h3>
 
-              {post.description && (
+              {post.summary && (
                 <p style={desc}>
-                  {post.description.slice(0, 150)}...
+                  {post.summary.slice(0, 150)}...
                 </p>
               )}
 
