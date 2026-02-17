@@ -6,6 +6,19 @@ const API = process.env.NEXT_PUBLIC_API_BASE;
 
 console.log("API BASE:", API);
 
+/* 🔥 Inject Scroll Animation Once (Safe for Next.js) */
+if (typeof window !== "undefined" && !document.getElementById("global-scroll-style")) {
+  const style = document.createElement("style");
+  style.id = "global-scroll-style";
+  style.innerHTML = `
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 export default function Home() {
   const [feed, setFeed] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,8 +47,6 @@ export default function Home() {
       });
   }, []);
 
-  const headlines = feed.slice(0, 5);
-
   return (
     <div style={container}>
 
@@ -55,61 +66,22 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* ELITE BREAKING TICKER */}
-      {!loading && !error && headlines.length > 0 && (
-        <div style={tickerWrap}>
-          <div style={tickerFadeLeft} />
-          <div style={tickerFadeRight} />
+      {/* 🎩 Rolling Tech Banner */}
+      <div style={techBanner}>
+        Built with: • Node.js • PostgreSQL • RSS Automation • AI Ranking Pipeline • Render + Vercel Deployment
+      </div>
 
-          <div style={ticker}>
-            <div style={tickerInner}>
+      {/* 🔴 BREAKING SECTION */}
+      {!loading && !error && feed.length > 0 && (
+        <div style={breakingContainer}>
+          <div style={breakingTitle}>BREAKING</div>
 
-              {/* First Copy */}
-              {headlines.map((post, index) => (
-                <span key={`first-${post.id}`} style={tickerItem}>
-                  {index === 0 && (
-                    <span style={liveWrap}>
-                      <span style={liveDot}></span>
-                      <span style={liveText}>BREAKING</span>
-                    </span>
-                  )}
-
-                  {post.source_url ? (
-                    <a
-                      href={post.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={tickerLink}
-                    >
-                      {post.headline}
-                    </a>
-                  ) : (
-                    <span>{post.headline}</span>
-                  )}
-                  <span style={separator}>•</span>
-                </span>
-              ))}
-
-              {/* Duplicate Copy for Seamless Loop */}
-              {headlines.map((post) => (
-                <span key={`second-${post.id}`} style={tickerItem}>
-                  {post.source_url ? (
-                    <a
-                      href={post.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={tickerLink}
-                    >
-                      {post.headline}
-                    </a>
-                  ) : (
-                    <span>{post.headline}</span>
-                  )}
-                  <span style={separator}>•</span>
-                </span>
-              ))}
-
-            </div>
+          <div style={breakingSlider}>
+            {feed.slice(0, 5).map(item => (
+              <div key={item.id} style={breakingItem}>
+                {item.headline}
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -145,55 +117,32 @@ export default function Home() {
               </div>
             ))}
           </div>
-
-          {/* CTA */}
-          <div style={ctaSection}>
-            <h2>Are You a Journalist?</h2>
-            <p>
-              Submit your stories and reach a growing audience powered by AI ranking.
-            </p>
-            <button style={ctaButton}>
-              Submit Your News
-            </button>
-          </div>
         </>
       )}
 
-      {/* TECH STRIP */}
-      <div style={techSection}>
-        <h3>Powered by GENŌ Intelligentia</h3>
-        <div style={techTicker}>
-          Built with: • Node.js backend • PostgreSQL database • RSS ingestion automation • AI ranking pipeline (planned) • Real-time deployment (Render + Vercel)
-        </div>
+      {/* 📰 Journalist Section */}
+      <div style={journalistSection}>
+        <h2>Are You a Journalist?</h2>
+        <p>
+          Publish your stories on Newstrac and earn revenue tied directly to your readership. No editorial bias, just
+          AI-ranked visibility.
+        </p>
+        <a href="/submit" style={journalistButton}>
+          Submit Your Story →
+        </a>
       </div>
 
       <footer style={footer}>
         © 2026 Geno Intelligentia Limited, United Kingdom
       </footer>
 
-      {/* ELITE ANIMATIONS */}
-      <style jsx>{`
-        @keyframes scrollLoop {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.3; }
-          100% { opacity: 1; }
-        }
-
-        div[style*="scrollLoop"] {
-          animation: scrollLoop 25s linear infinite;
-        }
-      `}</style>
-
     </div>
   );
 }
 
-/* STYLES */
+/* =========================
+   STYLES
+========================= */
 
 const container = {
   fontFamily: "system-ui, Arial",
@@ -207,7 +156,7 @@ const header = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  marginBottom: 40
+  marginBottom: 20
 };
 
 const logoWrap = {
@@ -229,15 +178,58 @@ const navButton = {
   color: "#000"
 };
 
-const sectionTitle = {
-  fontSize: 26,
-  marginBottom: 20
+/* 🎩 Rolling Tech Banner */
+
+const techBanner = {
+  marginBottom: 30,
+  fontSize: 14,
+  color: "#555",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  animation: "scroll 25s linear infinite"
 };
+
+/* 🔴 Breaking Section */
+
+const breakingContainer = {
+  display: "flex",
+  alignItems: "center",
+  overflow: "hidden",
+  borderRadius: 10,
+  marginBottom: 30,
+  background: "#111",
+  color: "#fff"
+};
+
+const breakingTitle = {
+  padding: "10px 16px",
+  fontWeight: "bold",
+  background: "#e10600"
+};
+
+const breakingSlider = {
+  display: "flex",
+  gap: 40,
+  padding: "10px 20px",
+  whiteSpace: "nowrap",
+  animation: "scroll 20s linear infinite"
+};
+
+const breakingItem = {
+  fontSize: 14
+};
+
+/* 📱 Responsive Grid Upgrade */
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
   gap: 20
+};
+
+const sectionTitle = {
+  fontSize: 26,
+  marginBottom: 20
 };
 
 const card = {
@@ -260,116 +252,29 @@ const readMore = {
   textDecoration: "none"
 };
 
+/* 📰 Journalist Section */
+
+const journalistSection = {
+  marginTop: 80,
+  padding: 40,
+  borderRadius: 14,
+  background: "#f4f6f8",
+  textAlign: "center"
+};
+
+const journalistButton = {
+  display: "inline-block",
+  marginTop: 20,
+  padding: "12px 24px",
+  background: "#000",
+  color: "#fff",
+  borderRadius: 8,
+  textDecoration: "none",
+  fontWeight: 600
+};
+
 const footer = {
   marginTop: 60,
   textAlign: "center",
   color: "#777"
-};
-
-const tickerWrap = {
-  position: "relative",
-  overflow: "hidden",
-  background: "#000",
-  color: "#fff",
-  padding: "10px 0",
-  marginBottom: 30
-};
-
-const ticker = {
-  overflow: "hidden",
-  whiteSpace: "nowrap"
-};
-
-const tickerInner = {
-  display: "inline-flex",
-  animation: "scrollLoop 25s linear infinite"
-};
-
-const tickerItem = {
-  display: "inline-flex",
-  alignItems: "center",
-  marginRight: 40
-};
-
-const tickerLink = {
-  color: "#fff",
-  textDecoration: "none",
-  fontWeight: 500
-};
-
-const separator = {
-  marginLeft: 20
-};
-
-const tickerFadeLeft = {
-  position: "absolute",
-  left: 0,
-  top: 0,
-  bottom: 0,
-  width: 60,
-  background: "linear-gradient(to right, #000 70%, transparent)"
-};
-
-const tickerFadeRight = {
-  position: "absolute",
-  right: 0,
-  top: 0,
-  bottom: 0,
-  width: 60,
-  background: "linear-gradient(to left, #000 70%, transparent)"
-};
-
-const liveWrap = {
-  display: "inline-flex",
-  alignItems: "center",
-  marginRight: 12,
-  fontWeight: 700
-};
-
-const liveDot = {
-  width: 8,
-  height: 8,
-  borderRadius: "50%",
-  background: "red",
-  marginRight: 6,
-  animation: "pulse 1.5s infinite"
-};
-
-const liveText = {
-  fontSize: 12,
-  letterSpacing: 1
-};
-
-const ctaSection = {
-  marginTop: 60,
-  padding: 40,
-  textAlign: "center",
-  background: "#f4f4f4",
-  borderRadius: 16
-};
-
-const ctaButton = {
-  marginTop: 20,
-  padding: "12px 24px",
-  borderRadius: 10,
-  border: "none",
-  background: "#000",
-  color: "#fff",
-  fontWeight: 600,
-  cursor: "pointer"
-};
-
-const techSection = {
-  marginTop: 60,
-  padding: 30,
-  background: "#111",
-  color: "#fff",
-  borderRadius: 16,
-  textAlign: "center"
-};
-
-const techTicker = {
-  marginTop: 10,
-  whiteSpace: "nowrap",
-  overflow: "hidden"
 };
