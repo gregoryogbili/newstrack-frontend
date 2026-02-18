@@ -229,7 +229,7 @@ const card = {
   minHeight: 210,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between"
+  justifyContent: "flex-start"
 };
 
 const cardTitle = {
@@ -251,7 +251,8 @@ const readMore = {
   fontWeight: 700,
   cursor: "pointer",
   textAlign: "left",
-  padding: 0
+  padding: 0,
+  marginTop: "auto"
 };
 
 /* AD */
@@ -259,9 +260,9 @@ const readMore = {
 const adCard = {
   border: "1px dashed #ccc",
   borderRadius: 14,
-  padding: 18,
+  padding: 14,
   background: "#f7f7f7",
-  minHeight: 260,
+  minHeight: 210,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
