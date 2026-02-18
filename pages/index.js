@@ -117,7 +117,7 @@ function ArticleCard({ item }) {
       <h3 style={cardTitle}>{item.headline}</h3>
       <p style={cardSnippet}>
         {item.summary
-          ? item.summary.slice(0, 240) + "..."
+          ? item.summary.slice(0, 170) + "..."
           : "Click to read the full article."}
       </p>
       <button style={readMore} onClick={openFull}>
@@ -224,9 +224,9 @@ const grid = {
 const card = {
   border: "1px solid #d6d6d6",
   borderRadius: 14,
-  padding: 18,
+  padding: 14,
   background: "#ededed",
-  minHeight: 260,
+  minHeight: 210,
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between"
@@ -235,12 +235,12 @@ const card = {
 const cardTitle = {
   fontSize: 18,
   fontWeight: 800,
-  marginBottom: 12
+  marginBottom: 8
 };
 
 const cardSnippet = {
   fontSize: 14,
-  lineHeight: 1.6,
+  lineHeight: 1.5,
   color: "#444",
   marginBottom: 14
 };
