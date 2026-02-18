@@ -185,6 +185,8 @@ const categoryWrap = {
 
 const categoryTab = {
   padding: "10px 18px",
+  minWidth: "110px",
+  textAlign: "center",
   background: "#ededed",
   border: "1px solid #d6d6d6",
   borderRadius: 30,
@@ -195,6 +197,8 @@ const categoryTab = {
 
 const liveTab = {
   padding: "10px 18px",
+  minWidth: "110px",
+  textAlign: "center",
   background: "#fff0f0",
   border: "1px solid #ffb3b3",
   borderRadius: 30,
@@ -216,7 +220,8 @@ const grid = {
   display: "grid",
   gridTemplateColumns: "repeat(4, 1fr)",
   gap: 24,
-  marginBottom: 30
+  marginBottom: 30,
+  alignItems: "stretch"
 };
 
 /* CARD */
@@ -227,9 +232,11 @@ const card = {
   padding: 14,
   background: "#ededed",
   minHeight: 210,
+  height: "100%",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "flex-start"
+  justifyContent: "flex-start",
+  boxSizing: "border-box"
 };
 
 const cardTitle = {
@@ -263,10 +270,12 @@ const adCard = {
   padding: 14,
   background: "#f7f7f7",
   minHeight: 210,
+  height: "100%",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  alignItems: "center"
+  alignItems: "center",
+  boxSizing: "border-box"
 };
 
 const adLabel = {
