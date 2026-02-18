@@ -1,155 +1,148 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import Head from "next/head";
+import { useEffect, useMemo, useState } from "react";
 
-const API = process.env.NEXT_PUBLIC_API_BASE;
+import BreakingStrip from "../components/BreakingStrip";
+import HeroSplit from "../components/HeroSplit";
+import JournalistCallout from "../components/JournalistCallout";
+import SiteFooter from "../components/SiteFooter";
 
-console.log("API BASE:", API);
-
-/* 🔥 Inject Scroll Animation Once (Safe for Next.js) */
-if (typeof window !== "undefined" && !document.getElementById("global-scroll-style")) {
-  const style = document.createElement("style");
-  style.id = "global-scroll-style";
-  style.innerHTML = `
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-  `;
-  document.head.appendChild(style);
-}
+const API = process.env.NEXT_PUBLIC_API;
 
 export default function Home() {
   const [feed, setFeed] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!API) {
-      setError("API base URL not configured.");
-      setLoading(false);
-      return;
-    }
-
-    fetch(`${API}/posts`)
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch posts");
-        return res.json();
-      })
-      .then(data => {
-        setFeed(data.slice(0, 12));
+    fetch(`${API}/feed`)
+      .then((res) => res.json())
+      .then((data) => {
+        setFeed(Array.isArray(data) ? data : []);
         setLoading(false);
       })
-      .catch(err => {
-        console.error("Fetch error:", err);
-        setError("Unable to load news at the moment.");
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, []);
+
+  const sorted = useMemo(() => {
+    return [...feed].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+  }, [feed]);
+
+  const trending = sorted.slice(0, 4);
+  const latest = sorted.slice(4, 24);
+  const heroItems = sorted.slice(0, 6);
+  const breakingItems = sorted.slice(0, 10);
 
   return (
     <div style={container}>
+      <Head />
 
-      {/* NAVBAR */}
+      {/* HEADER */}
       <header style={header}>
         <div style={logoWrap}>
-          <Image 
-            src="/logo.png" 
-            alt="NewsTrac Logo" 
-            width={40} 
-            height={40} 
-          />
+          <Image src="/logo.png" alt="NewsTrac Logo" width={40} height={40} priority />
           <h1 style={logoText}>NewsTrac</h1>
         </div>
-        <nav>
-          <Link href="/login" style={navButton}>Login</Link>
-        </nav>
+
+        <Link href="/login" style={navButton}>Login</Link>
       </header>
 
-      {/* 🎩 Rolling Tech Banner */}
-      <div style={techBanner}>
-        Built with: • Node.js • PostgreSQL • RSS Automation • AI Ranking Pipeline • Render + Vercel Deployment
+      <BreakingStrip items={breakingItems} />
+      <HeroSplit items={heroItems} loading={loading} />
+
+      {/* CATEGORY TABS (UNDER HERO) */}
+      <div style={categoryWrap}>
+        <Link href="/world" style={categoryTab}>World</Link>
+        <Link href="/politics" style={categoryTab}>Politics</Link>
+        <Link href="/economy" style={categoryTab}>Economy</Link>
+        <Link href="/technology" style={categoryTab}>Technology</Link>
+        <Link href="/live" style={liveTab}>LIVE</Link>
       </div>
 
-      {/* 🔴 BREAKING SECTION */}
-      {!loading && !error && feed.length > 0 && (
-        <div style={breakingContainer}>
-          <div style={breakingTitle}>BREAKING</div>
+      {/* TRENDING */}
+      <h2 style={sectionTitle}>Trending</h2>
+      <div style={grid}>
+        {trending.map((item) => (
+          <ArticleCard key={item.id} item={item} />
+        ))}
+      </div>
 
-          <div style={breakingSlider}>
-            {feed.slice(0, 5).map(item => (
-              <div key={item.id} style={breakingItem}>
-                {item.headline}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
+      {/* LATEST */}
       <h2 style={sectionTitle}>Latest News</h2>
-
-      {loading && <p>Loading latest stories...</p>}
-      {error && <p style={{color:"red"}}>{error}</p>}
-
-      {!loading && !error && (
-        <>
-          <div style={grid}>
-            {feed.map(post => (
-              <div key={post.id} style={card}>
-                <h3>{post.headline}</h3>
-
-                {post.description && (
-                  <p style={desc}>
-                    {post.description.slice(0, 150)}...
-                  </p>
-                )}
-
-                {post.source_url && (
-                  <a 
-                    href={post.source_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={readMore}
-                  >
-                    Read Full Article →
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* 📰 Journalist Section */}
-      <div style={journalistSection}>
-        <h2>Are You a Journalist?</h2>
-        <p>
-          Publish your stories on Newstrac and earn revenue tied directly to your readership. No editorial bias, just
-          AI-ranked visibility.
-        </p>
-        <a href="/submit" style={journalistButton}>
-          Submit Your Story →
-        </a>
+      <div style={grid}>
+        {latest.slice(0, 12).map((item, index) => (
+          <>
+            <ArticleCard key={item.id} item={item} />
+            {(index === 7) && <AdCard key="ad-1" />}
+          </>
+        ))}
       </div>
 
-      <footer style={footer}>
-        © 2026 Geno Intelligentia Limited, United Kingdom
-      </footer>
+      <JournalistCallout />
 
+      <div style={grid}>
+        {latest.slice(12).map((item, index) => (
+          <>
+            <ArticleCard key={item.id} item={item} />
+            {(index === 3) && <AdCard key="ad-2" />}
+          </>
+        ))}
+      </div>
+
+      <SiteFooter />
+
+      <style jsx global>{`
+        @media (max-width: 1000px) {
+          .grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+          .grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
     </div>
   );
 }
 
-/* =========================
-   STYLES
-========================= */
+/* ARTICLE CARD */
+function ArticleCard({ item }) {
+  const openFull = () => {
+    const url = item?.source_url || item?.url;
+    if (url) window.open(url, "_blank");
+  };
+
+  return (
+    <div style={card}>
+      <h3 style={cardTitle}>{item.headline}</h3>
+      <p style={cardSnippet}>
+        {item.summary
+          ? item.summary.slice(0, 240) + "..."
+          : "Click to read the full article."}
+      </p>
+      <button style={readMore} onClick={openFull}>
+        Read Full Article →
+      </button>
+    </div>
+  );
+}
+
+/* AD CARD */
+function AdCard() {
+  return (
+    <div style={adCard}>
+      <div style={adLabel}>Sponsored</div>
+      <div style={adContent}>Ad Space</div>
+    </div>
+  );
+}
+
+/* STYLES */
 
 const container = {
-  fontFamily: "system-ui, Arial",
-  maxWidth: 1100,
-  width: "100%",
+  maxWidth: "1150px",
   margin: "0 auto",
-  padding: 20
+  padding: "20px"
 };
 
 const header = {
@@ -167,114 +160,123 @@ const logoWrap = {
 
 const logoText = {
   fontSize: 24,
-  fontWeight: 700
+  fontWeight: 800,
+  margin: 0
 };
 
 const navButton = {
   padding: "8px 14px",
+  border: "1px solid #ccc",
   borderRadius: 8,
-  border: "1px solid #ddd",
   textDecoration: "none",
-  color: "#000"
-};
-
-/* 🎩 Rolling Tech Banner */
-
-const techBanner = {
-  marginBottom: 30,
-  fontSize: 14,
-  color: "#555",
-  overflow: "hidden",
-  whiteSpace: "nowrap",
-  animation: "scroll 25s linear infinite"
-};
-
-/* 🔴 Breaking Section */
-
-const breakingContainer = {
-  display: "flex",
-  alignItems: "center",
-  overflow: "hidden",
-  borderRadius: 10,
-  marginBottom: 30,
-  background: "#111",
-  color: "#fff"
-};
-
-const breakingTitle = {
-  padding: "10px 16px",
-  fontWeight: "bold",
-  background: "#e10600"
-};
-
-const breakingSlider = {
-  display: "flex",
-  gap: 40,
-  padding: "10px 20px",
-  whiteSpace: "nowrap",
-  animation: "scroll 20s linear infinite"
-};
-
-const breakingItem = {
-  fontSize: 14
-};
-
-/* 📱 Responsive Grid Upgrade */
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  gap: 20
-};
-
-const sectionTitle = {
-  fontSize: 26,
-  marginBottom: 20
-};
-
-const card = {
-  border: "1px solid #eee",
-  borderRadius: 12,
-  padding: 18,
-  background: "#fafafa"
-};
-
-const desc = {
-  color: "#666",
-  marginTop: 8
-};
-
-const readMore = {
-  display: "inline-block",
-  marginTop: 10,
   color: "#000",
-  fontWeight: 600,
-  textDecoration: "none"
-};
-
-/* 📰 Journalist Section */
-
-const journalistSection = {
-  marginTop: 80,
-  padding: 40,
-  borderRadius: 14,
-  background: "#f4f6f8",
-  textAlign: "center"
-};
-
-const journalistButton = {
-  display: "inline-block",
-  marginTop: 20,
-  padding: "12px 24px",
-  background: "#000",
-  color: "#fff",
-  borderRadius: 8,
-  textDecoration: "none",
   fontWeight: 600
 };
 
-const footer = {
-  marginTop: 60,
-  textAlign: "center",
-  color: "#777"
+/* CATEGORY TABS */
+
+const categoryWrap = {
+  display: "flex",
+  gap: "16px",
+  marginTop: 20,
+  marginBottom: 30,
+  flexWrap: "wrap"
+};
+
+const categoryTab = {
+  padding: "10px 18px",
+  background: "#ededed",
+  border: "1px solid #d6d6d6",
+  borderRadius: 30,
+  textDecoration: "none",
+  color: "#333",
+  fontWeight: 600
+};
+
+const liveTab = {
+  padding: "10px 18px",
+  background: "#fff0f0",
+  border: "1px solid #ffb3b3",
+  borderRadius: 30,
+  textDecoration: "none",
+  color: "#c40000",
+  fontWeight: 700
+};
+
+/* GRID */
+
+const sectionTitle = {
+  marginTop: 30,
+  marginBottom: 20,
+  fontSize: 22,
+  fontWeight: 800
+};
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gap: 24,
+  marginBottom: 30
+};
+
+/* CARD */
+
+const card = {
+  border: "1px solid #d6d6d6",
+  borderRadius: 14,
+  padding: 18,
+  background: "#ededed",
+  minHeight: 260,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between"
+};
+
+const cardTitle = {
+  fontSize: 18,
+  fontWeight: 800,
+  marginBottom: 12
+};
+
+const cardSnippet = {
+  fontSize: 14,
+  lineHeight: 1.6,
+  color: "#444",
+  marginBottom: 14
+};
+
+const readMore = {
+  border: "none",
+  background: "transparent",
+  fontWeight: 700,
+  cursor: "pointer",
+  textAlign: "left",
+  padding: 0
+};
+
+/* AD */
+
+const adCard = {
+  border: "1px dashed #ccc",
+  borderRadius: 14,
+  padding: 18,
+  background: "#f7f7f7",
+  minHeight: 260,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center"
+};
+
+const adLabel = {
+  fontSize: 12,
+  fontWeight: 700,
+  color: "#777",
+  marginBottom: 10
+};
+
+const adContent = {
+  fontSize: 16,
+  fontWeight: 600,
+  color: "#333"
 };
