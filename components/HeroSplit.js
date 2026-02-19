@@ -90,17 +90,13 @@ export default function HeroSplit({ items = [], loading }) {
     <section style={wrap}>
       {/* LEFT: Big breaking story (exclusive) */}
       <div style={left}>
-        <div style={leftHeader}>
-          <span style={leftTag}>BREAKING</span>
-          <span style={leftSub}>Top story</span>
-        </div>
-
+        
         <div style={leftBody}>
           <h2 style={leftTitle}>
             {loading ? "Loading..." : (leftItem?.headline || "No headline yet")}
           </h2>
           <p style={leftSnippet}>
-            {leftItem?.summary ? trim(leftItem.summary, 170) : "Developing story — click to read the full article."}
+            {leftItem?.summary ? trim(leftItem.summary, 260) : "Developing story — click to read the full article."}
           </p>
 
           <button style={leftBtn} onClick={() => openFull(leftItem)} disabled={!leftItem}>
@@ -178,7 +174,10 @@ const left = {
   borderRadius: 14,
   padding: 16,
   background: "#fff",
-  minHeight: 260
+  minHeight: 260,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center"
 };
 
 const leftHeader = {
@@ -205,7 +204,10 @@ const leftSub = {
 };
 
 const leftBody = {
-  marginTop: 6
+  display: "flex",
+  flexDirection: "column",
+  gap: 16,
+  maxWidth: 520
 };
 
 const leftTitle = {
@@ -226,9 +228,11 @@ const leftBtn = {
   background: "#111",
   color: "#fff",
   fontWeight: 800,
-  padding: "10px 12px",
+  padding: "10px 18px",
   borderRadius: 10,
-  cursor: "pointer"
+  cursor: "pointer",
+  marginTop: "auto",
+  alignSelf: "flex-start"
 };
 
 const right = {
