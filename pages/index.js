@@ -7,6 +7,7 @@ import BreakingStrip from "../components/BreakingStrip";
 import HeroSplit from "../components/HeroSplit";
 import JournalistCallout from "../components/JournalistCallout";
 import SiteFooter from "../components/SiteFooter";
+import he from "he";
 
 const API = process.env.NEXT_PUBLIC_API;
 
@@ -25,15 +26,27 @@ export default function Home() {
   }, []);
 
   const sorted = useMemo(() => {
-    return [...feed].sort(
+    const unique = [];
+    const seen = new Set();
+
+    for (const item of feed) {
+      const key = item.source_url || item.url || item.headline;
+
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(item);
+      }
+    }
+
+    return unique.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
   }, [feed]);
 
-  const trending = sorted.slice(0, 4);
-  const latest = sorted.slice(4, 24);
-  const heroItems = sorted.slice(0, 6);
-  const breakingItems = sorted.slice(0, 10);
+  const breakingItems = sorted.slice(0, 10);   // top 10
+  const heroItems = sorted.slice(10, 16);      // next 6
+  const trending = sorted.slice(16, 24);       // next 8
+  const latest = sorted.slice(24, 120);        // everything else
 
   return (
     <div style={container}>
@@ -63,7 +76,7 @@ export default function Home() {
 
       {/* TRENDING */}
       <h2 style={sectionTitle}>Trending</h2>
-      <div style={grid}>
+      <div className="newsGrid">
         {trending.map((item) => (
           <ArticleCard key={item.id} item={item} />
         ))}
@@ -71,8 +84,8 @@ export default function Home() {
 
       {/* LATEST */}
       <h2 style={sectionTitle}>Latest News</h2>
-      <div style={grid}>
-        {latest.slice(0, 12).map((item, index) => (
+      <div className="newsGrid">
+        {latest.slice(0, 20).map((item, index) => (
           <>
             <ArticleCard key={item.id} item={item} />
             {(index === 7) && <AdCard key="ad-1" />}
@@ -82,8 +95,8 @@ export default function Home() {
 
       <JournalistCallout />
 
-      <div style={grid}>
-        {latest.slice(12).map((item, index) => (
+      <div className="newsGrid">
+        {latest.slice(20).map((item, index) => (
           <>
             <ArticleCard key={item.id} item={item} />
             {(index === 3) && <AdCard key="ad-2" />}
@@ -94,13 +107,27 @@ export default function Home() {
       <SiteFooter />
 
       <style jsx global>{`
+        .newsGrid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 22px;
+          margin-bottom: 30px;
+          align-items: stretch;
+        }
+
         @media (max-width: 1000px) {
-          .grid { grid-template-columns: repeat(2, 1fr); }
+          .newsGrid {
+            grid-template-columns: repeat(2, 1fr);
+          }
         }
-        @media (max-width: 600px) {
-          .grid { grid-template-columns: 1fr; }
+
+        @media (max-width: 650px) {
+          .newsGrid {
+            grid-template-columns: 1fr;
+          }
         }
-      `}</style>
+     `}</style>
+
     </div>
   );
 }
@@ -114,10 +141,10 @@ function ArticleCard({ item }) {
 
   return (
     <div style={card}>
-      <h3 style={cardTitle}>{item.headline}</h3>
+      <h3 style={cardTitle}>{he.decode(item.headline)}</h3>
       <p style={cardSnippet}>
         {item.summary
-          ? item.summary.slice(0, 170) + "..."
+          ? he.decode(item.summary).slice(0, 170) + "..."
           : "Click to read the full article."}
       </p>
       <button style={readMore} onClick={openFull}>
@@ -140,9 +167,10 @@ function AdCard() {
 /* STYLES */
 
 const container = {
-  maxWidth: "1150px",
+  maxWidth: "1200px",
   margin: "0 auto",
-  padding: "20px"
+  padding: "20px",
+  fontFamily: "'Inter', sans-serif"
 };
 
 const header = {
@@ -212,25 +240,18 @@ const liveTab = {
 const sectionTitle = {
   marginTop: 30,
   marginBottom: 20,
-  fontSize: 22,
-  fontWeight: 800
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(4, 1fr)",
-  gap: 24,
-  marginBottom: 30,
-  alignItems: "stretch"
+  fontSize: 24,
+  fontWeight: 700,
+  fontFamily: "'Playfair Display', serif"
 };
 
 /* CARD */
 
 const card = {
   border: "1px solid #d6d6d6",
-  borderRadius: 14,
+  borderRadius: 8,
   padding: 14,
-  background: "#ededed",
+  background: "#ffffff",
   minHeight: 210,
   height: "100%",
   display: "flex",
@@ -240,9 +261,11 @@ const card = {
 };
 
 const cardTitle = {
-  fontSize: 18,
-  fontWeight: 800,
-  marginBottom: 8
+  fontFamily: "'Playfair Display', serif",
+  fontSize: 20,
+  fontWeight: 700,
+  marginBottom: 8,
+  lineHeight: 1.3
 };
 
 const cardSnippet = {
