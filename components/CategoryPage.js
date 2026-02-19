@@ -17,16 +17,16 @@ export default function CategoryPage({ categoryKey, title, subtitle }) {
   const [feed, setFeed] = useState([]);
 
   useEffect(() => {
-    fetch(`${API}/feed`)
+    fetch(`${API}/feed?category=${categoryKey}`)
       .then((r) => r.json())
       .then((d) => setFeed(Array.isArray(d) ? d : []))
       .catch(() => setFeed([]));
   }, []);
 
   const items = useMemo(() => {
-    const list = (feed || []).filter((x) => (x.category || "").toLowerCase() === categoryKey);
-    return list.slice(0, 12);
-  }, [feed, categoryKey]);
+    return (feed || []).slice(0, 40);
+  }, [feed]);
+
 
   const featured = items[0];
   const rest = items.slice(1, 9);

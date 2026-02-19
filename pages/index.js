@@ -50,7 +50,15 @@ export default function Home() {
 
   return (
     <div style={container}>
-      <Head />
+      <Head>
+        <title>NewsTrac | Real-Time Global News</title>
+        <meta
+          name="description"
+          content="Breaking global news powered by AI-ranked visibility. Politics, economy, technology and world updates in real time."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+
 
       {/* HEADER */}
       <header style={header}>
@@ -126,6 +134,14 @@ export default function Home() {
             grid-template-columns: 1fr;
           }
         }
+
+        a:hover {
+          background: #ffffff !important;
+          color: #000000 !important;
+          border-color: #000000 !important;
+          transition: all 0.2s ease;
+}
+
      `}</style>
 
     </div>
@@ -215,24 +231,27 @@ const categoryTab = {
   padding: "10px 18px",
   minWidth: "110px",
   textAlign: "center",
-  background: "#ededed",
-  border: "1px solid #d6d6d6",
-  borderRadius: 30,
+  background: "#f3f3f3",
+  border: "1px solid #ddd",
+  borderRadius: 8,
   textDecoration: "none",
-  color: "#333",
-  fontWeight: 600
+  color: "#111",
+  fontWeight: 700,
+  transition: "all 0.2s ease",
+  cursor: "pointer"
 };
 
 const liveTab = {
   padding: "10px 18px",
   minWidth: "110px",
   textAlign: "center",
-  background: "#fff0f0",
-  border: "1px solid #ffb3b3",
-  borderRadius: 30,
+  background: "#c40000",
+  border: "1px solid #a00000",
+  borderRadius: 8,
   textDecoration: "none",
-  color: "#c40000",
-  fontWeight: 700
+  color: "#ffffff",
+  fontWeight: 800,
+  letterSpacing: 0.5
 };
 
 /* GRID */
@@ -241,8 +260,10 @@ const sectionTitle = {
   marginTop: 30,
   marginBottom: 20,
   fontSize: 24,
-  fontWeight: 700,
-  fontFamily: "'Playfair Display', serif"
+  fontWeight: 800,
+  fontFamily: "'Playfair Display', serif",
+  borderLeft: "4px solid #c40000",
+  paddingLeft: "10px"
 };
 
 /* CARD */
