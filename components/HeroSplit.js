@@ -18,7 +18,6 @@ function pickBanner(category) {
 }
 
 function openFull(item) {
-  // Candidates have source_url; posts may have source_url too
   const url = item?.source_url || item?.sourceUrl || item?.url;
   if (url) window.open(url, "_blank", "noopener,noreferrer");
 }
@@ -26,10 +25,7 @@ function openFull(item) {
 export default function HeroSplit({ items = [], loading }) {
   const list = useMemo(() => (items || []).filter(Boolean).slice(0, 8), [items]);
 
-  // Left = “exclusive” biggest breaking headline
   const leftItem = useMemo(() => list[0] || null, [list]);
-
-  // Right slider = the rest (exclude left item)
   const rightItems = useMemo(() => list.slice(1, 6), [list]);
 
   const [idx, setIdx] = useState(0);
@@ -41,7 +37,6 @@ export default function HeroSplit({ items = [], loading }) {
   useEffect(() => {
     if (!rightItems.length) return;
 
-    // 3 seconds rotation
     intervalRef.current = setInterval(() => {
       setFade(true);
       setTimeout(() => {
@@ -74,7 +69,6 @@ export default function HeroSplit({ items = [], loading }) {
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
 
-    // simple swipe threshold
     if (Math.abs(dx) < 45) return;
 
     clearInterval(intervalRef.current);
@@ -87,19 +81,24 @@ export default function HeroSplit({ items = [], loading }) {
   };
 
   return (
-    <section style={wrap}>
+    <section className="heroWrap" style={wrap}>
       {/* LEFT: Big breaking story (exclusive) */}
       <div style={left}>
-        
         <div style={leftBody}>
           <h2 style={leftTitle}>
             {loading ? "Loading..." : (leftItem?.headline || "No headline yet")}
           </h2>
           <p style={leftSnippet}>
-            {leftItem?.summary ? trim(leftItem.summary, 260) : "Developing story — click to read the full article."}
+            {leftItem?.summary
+              ? trim(leftItem.summary, 260)
+              : "Developing story — click to read the full article."}
           </p>
 
-          <button style={leftBtn} onClick={() => openFull(leftItem)} disabled={!leftItem}>
+          <button
+            style={leftBtn}
+            onClick={() => openFull(leftItem)}
+            disabled={!leftItem}
+          >
             Read Full Article →
           </button>
         </div>
@@ -121,7 +120,11 @@ export default function HeroSplit({ items = [], loading }) {
           <div style={imageWrap}>
             <Image
               src={bannerSrc}
-              alt={active?.category ? `${active.category} banner` : "News banner"}
+              alt={
+                active?.category
+                  ? `${active.category} banner`
+                  : "News banner"
+              }
               fill
               priority
               sizes="(max-width: 900px) 100vw, 58vw"
@@ -131,7 +134,9 @@ export default function HeroSplit({ items = [], loading }) {
           </div>
 
           <div style={{ ...rightText, ...(fade ? fadeOut : fadeIn) }}>
-            <div style={rightKicker}>{(active?.category || "Top").toUpperCase()}</div>
+            <div style={rightKicker}>
+              {(active?.category || "Top").toUpperCase()}
+            </div>
             <div style={rightHeadline}>{active?.headline || "—"}</div>
           </div>
         </button>
@@ -153,6 +158,21 @@ export default function HeroSplit({ items = [], loading }) {
 
         <div style={hint}>...</div>
       </div>
+
+      <style jsx>{`
+        .heroWrap {
+          display: grid;
+          grid-template-columns: 1fr 1.6fr;
+          gap: 14px;
+          margin-bottom: 22px;
+        }
+
+        @media (max-width: 900px) {
+          .heroWrap {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -163,8 +183,6 @@ function trim(t, n) {
 }
 
 const wrap = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1.6fr",
   gap: 14,
   marginBottom: 22
 };
@@ -178,29 +196,6 @@ const left = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "center"
-};
-
-const leftHeader = {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  marginBottom: 10
-};
-
-const leftTag = {
-  background: "#c40000",
-  color: "#fff",
-  fontWeight: 900,
-  padding: "6px 10px",
-  borderRadius: 8,
-  letterSpacing: 0.6,
-  fontSize: 12
-};
-
-const leftSub = {
-  color: "#666",
-  fontSize: 12,
-  fontWeight: 700
 };
 
 const leftBody = {
@@ -260,7 +255,8 @@ const imageWrap = {
 const overlay = {
   position: "absolute",
   inset: 0,
-  background: "linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.22), rgba(0,0,0,.10))"
+  background:
+    "linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.22), rgba(0,0,0,.10))"
 };
 
 const rightText = {
@@ -324,10 +320,3 @@ const hint = {
   fontSize: 12,
   fontWeight: 700
 };
-
-/* Responsive */
-const styleTag = `
-@media (max-width: 900px) {
-  .wrap { grid-template-columns: 1fr; }
-}
-`;
