@@ -140,7 +140,7 @@ const headerSub = {
 
 const featuredWrap = {
   display: "grid",
-  gridTemplateColumns: "1.1fr 1fr",
+  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
   gap: 16,
   border: "1px solid #eee",
   borderRadius: 16,
@@ -182,7 +182,7 @@ const readMore = {
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(4, 1fr)",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
   gap: 18,
   marginBottom: 28
 };
