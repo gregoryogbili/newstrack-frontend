@@ -38,9 +38,7 @@ export default function Home() {
       }
     }
 
-    return unique.sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at)
-    );
+    return unique; 
   }, [feed]);
 
   const breakingItems = sorted.slice(0, 10);   // top 10
