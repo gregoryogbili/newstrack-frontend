@@ -41,9 +41,13 @@ export default function Home() {
     return unique; 
   }, [feed]);
 
+  console.log("Sorted feed:", sorted.map(i => i.source_name));
+
   const breakingItems = sorted.slice(0, 10);   // top 10
   const heroItems = sorted.slice(10, 16);      // next 6
-  const trending = sorted.slice(16, 24);       // next 8
+  const redditItems = sorted.filter(i => i.source_name.includes("Reddit")).slice(0, 2);
+  const normalTrending = sorted.filter(i => !i.source_name.includes("Reddit")).slice(16, 22);
+  const trending = [...normalTrending, ...redditItems];
   const latest = sorted.slice(24, 120);        // everything else
 
   return (
