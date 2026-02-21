@@ -1,6 +1,35 @@
 import Head from "next/head";
 
 export default function SignalsDashboard() {
+
+  // ✅ STEP 1 — Data + Formatter (INSIDE component, ABOVE return)
+
+  const clusters = [
+    { title: "MIDDLE EAST ESCALATION", sources: 7, trend: "accelerating" },
+    { title: "AI REGULATION", sources: 5, trend: "stable" },
+    { title: "OIL PRICE VOLATILITY", sources: 6, trend: "rising" },
+    { title: "GLOBAL TRADE TENSIONS", sources: 4, trend: "emerging" }
+  ];
+
+  const getTrendDisplay = (trend) => {
+    switch (trend) {
+      case "accelerating":
+        return { symbol: "⇈", label: "Accelerating", style: acceleratingTrend };
+      case "rising":
+        return { symbol: "↑", label: "Rising", style: risingTrend };
+      case "emerging":
+        return { symbol: "↗", label: "Emerging", style: emergingTrend };
+      case "stable":
+        return { symbol: "→", label: "Stable", style: stableTrend };
+      case "cooling":
+        return { symbol: "↘", label: "Cooling", style: coolingTrend };
+      case "falling":
+        return { symbol: "↓", label: "Falling", style: fallingTrend };
+      default:
+        return { symbol: "•", label: trend, style: stableTrend };
+    }
+  };
+
   return (
     <>
       <Head>
@@ -54,46 +83,33 @@ export default function SignalsDashboard() {
             <div style={sectionHeader}>EMERGING STORY CLUSTERS</div>
 
             <div style={clusterGrid}>
-              <div style={clusterCard} className="cluster-card">
-                <div style={clusterTitle}>MIDDLE EAST ESCALATION</div>
-                <div style={clusterMeta}>
-                  7 Sources • <span style={acceleratingTrend}>⇈ Accelerating</span>
-                  </div>
-              </div>
+              {clusters.map((cluster, index) => {
+                const trendData = getTrendDisplay(cluster.trend);
 
-              <div style={clusterCard} className="cluster-card">
-                <div style={clusterTitle}>AI REGULATION</div>
-                <div style={clusterMeta}>
-                  5 Sources • <span style={stableTrend}>→ Stable</span>
+                return (
+                  <div key={index} style={clusterCard} className="cluster-card">
+                    <div style={clusterTitle}>{cluster.title}</div>
+                    <div style={clusterMeta}>
+                      {cluster.sources} Sources •{" "}
+                      <span style={trendData.style}>
+                        {trendData.symbol} {trendData.label}
+                      </span>
+                    </div>
                   </div>
-              </div>
-
-              <div style={clusterCard} className="cluster-card">
-                <div style={clusterTitle}>OIL PRICE VOLATILITY</div>
-                <div style={clusterMeta}>
-                6 Sources • <span style={risingTrend}>↑ Rising</span>
-                </div>
-              </div>
-
-              <div style={clusterCard} className="cluster-card">
-                <div style={clusterTitle}>GLOBAL TRADE TENSIONS</div>
-                <div style={clusterMeta}>
-                  4 Sources • <span style={emergingTrend}>↗ Emerging</span>
-                  </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
-
       <style jsx>{`
-  .cluster-card:hover {
-    transform: translateY(-4px);
-    border: 1px solid rgba(78,161,255,0.35);
-    box-shadow: 0 0 20px rgba(78,161,255,0.15);
-  }
-`}</style>
+        .cluster-card:hover {
+          transform: translateY(-4px);
+          border: 1px solid rgba(78, 161, 255, 0.35);
+          box-shadow: 0 0 20px rgba(78, 161, 255, 0.15);
+        }
+      `}</style>
     </>
   );
 }
@@ -228,7 +244,7 @@ const clusterCard = {
   borderRadius: 8,
   transition: "all 0.25s ease",
   cursor: "pointer",
-  position: "relative"
+  position: "relative",
 };
 
 const clusterTitle = {
@@ -244,31 +260,31 @@ const clusterMeta = {
 };
 
 const emergingTrend = {
-  color: "rgba(78, 161, 255, 0.85)", // soft cyan
-  fontWeight: 500
+  color: "rgba(78, 161, 255, 0.85)",
+  fontWeight: 500,
 };
 
 const risingTrend = {
-  color: "rgba(72, 187, 120, 0.85)", // muted green
-  fontWeight: 500
+  color: "rgba(72, 187, 120, 0.85)",
+  fontWeight: 500,
 };
 
 const acceleratingTrend = {
-  color: "rgba(255, 99, 99, 0.85)", // soft red
-  fontWeight: 500
+  color: "rgba(255, 99, 99, 0.85)",
+  fontWeight: 500,
 };
 
 const stableTrend = {
-  color: "rgba(120, 160, 255, 0.75)", // neutral blue
-  fontWeight: 500
+  color: "rgba(120, 160, 255, 0.75)",
+  fontWeight: 500,
 };
 
 const coolingTrend = {
-  color: "rgba(160, 160, 160, 0.7)", // soft grey
-  fontWeight: 500
+  color: "rgba(160, 160, 160, 0.7)",
+  fontWeight: 500,
 };
 
 const fallingTrend = {
-  color: "rgba(220, 80, 80, 0.8)", // muted red
-  fontWeight: 500
+  color: "rgba(220, 80, 80, 0.8)",
+  fontWeight: 500,
 };
