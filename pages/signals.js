@@ -1,49 +1,64 @@
-import { useEffect, useState } from "react";
 import Head from "next/head";
 
-const API = process.env.NEXT_PUBLIC_API;
-
-export default function SignalsPage() {
-  const [signals, setSignals] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${API}/signals`)
-      .then(res => res.json())
-      .then(data => {
-        setSignals(data || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
+export default function SignalsDashboard() {
   return (
     <>
       <Head>
-        <title>Signals | NewsTrac</title>
+        <title>NewsTrac Intelligence</title>
       </Head>
 
-      <div style={container}>
-        <h1 style={title}>Live Signal Monitor</h1>
-        <p style={subtitle}>
-          Real-time public narrative acceleration layer.
-        </p>
+      <div style={page}>
+        <div style={header}>
+          <h1 style={title}>NewsTrac Intelligence</h1>
+          <div style={subtitle}>Global Narrative Monitoring System</div>
+        </div>
 
-        {loading && <div style={loadingStyle}>Loading signals…</div>}
+        <div style={grid}>
 
-        {!loading && signals.length === 0 && (
-          <div style={emptyStyle}>No recent signal activity.</div>
-        )}
+          {/* Global Heat Map */}
+          <div style={panelLarge}>
+            <div style={panelTitle}>Global Narrative Heat Map</div>
+            <div style={placeholder}>Map Visualization (Phase 2)</div>
+          </div>
 
-        {!loading && signals.map((item, i) => (
-          <div key={i} style={card}>
-            <div style={headline}>{item.headline}</div>
-            <div style={meta}>
-              {item.source_name} ·{" "}
-              {new Date(item.published_at).toLocaleString()}
+          {/* Signal Velocity */}
+          <div style={panel}>
+            <div style={panelTitle}>Signal Velocity Index</div>
+            <div style={metric}>--</div>
+            <div style={metricLabel}>6 Hour Acceleration</div>
+          </div>
+
+          {/* Top Accelerating Topics */}
+          <div style={panel}>
+            <div style={panelTitle}>Top Accelerating Topics</div>
+            <div style={listItem}>• Energy Markets</div>
+            <div style={listItem}>• Middle East Conflict</div>
+            <div style={listItem}>• AI Regulation</div>
+            <div style={listItem}>• Global Trade</div>
+          </div>
+
+          {/* Economic Risk Pulse */}
+          <div style={panel}>
+            <div style={panelTitle}>Economic Risk Pulse</div>
+            <div style={metric}>--</div>
+            <div style={metricLabel}>Composite Risk Score</div>
+          </div>
+
+          {/* Regional Spread */}
+          <div style={panel}>
+            <div style={panelTitle}>Regional Signal Spread</div>
+            <div style={placeholderSmall}>Regional Distribution Chart</div>
+          </div>
+
+          {/* Emerging Story Clusters */}
+          <div style={panelWide}>
+            <div style={panelTitle}>Emerging Story Clusters</div>
+            <div style={placeholder}>
+              Narrative clustering and keyword grouping will appear here.
             </div>
           </div>
-        ))}
+
+        </div>
       </div>
     </>
   );
@@ -53,43 +68,104 @@ export default function SignalsPage() {
    STYLES
 =========================== */
 
-const container = {
-  maxWidth: 900,
-  margin: "0 auto",
-  padding: "60px 20px",
+const page = {
+  backgroundColor: "#0b1117",
+  minHeight: "100vh",
+  color: "#e6edf3",
+  fontFamily: "Inter, system-ui, sans-serif",
+  padding: "40px 30px",
 };
 
-const title = {
-  fontSize: 36,
-  fontWeight: 700,
-  marginBottom: 10,
-};
-
-const subtitle = {
-  color: "#666",
+const header = {
   marginBottom: 40,
 };
 
-const loadingStyle = {
-  opacity: 0.7,
+const title = {
+  fontSize: 28,
+  fontWeight: 500,
+  letterSpacing: "0.5px",
 };
 
-const emptyStyle = {
-  opacity: 0.5,
+const subtitle = {
+  fontSize: 14,
+  color: "#8b949e",
+  marginTop: 6,
 };
 
-const card = {
-  borderBottom: "1px solid #eee",
-  padding: "18px 0",
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(12, 1fr)",
+  gap: 20,
 };
 
-const headline = {
-  fontSize: 18,
-  fontWeight: 600,
-  marginBottom: 6,
+const panel = {
+  gridColumn: "span 4",
+  backgroundColor: "#111827",
+  padding: 20,
+  borderRadius: 8,
+  boxShadow: "0 0 20px rgba(0,0,0,0.4)",
 };
 
-const meta = {
+const panelLarge = {
+  gridColumn: "span 12",
+  backgroundColor: "#111827",
+  padding: 20,
+  borderRadius: 8,
+  boxShadow: "0 0 20px rgba(0,0,0,0.4)",
+};
+
+const panelWide = {
+  gridColumn: "span 12",
+  backgroundColor: "#111827",
+  padding: 20,
+  borderRadius: 8,
+  boxShadow: "0 0 20px rgba(0,0,0,0.4)",
+};
+
+const panelTitle = {
   fontSize: 13,
-  color: "#777",
+  textTransform: "uppercase",
+  letterSpacing: "1px",
+  color: "#60a5fa",
+  marginBottom: 15,
+};
+
+const metric = {
+  fontSize: 32,
+  fontWeight: 300,
+  color: "#38bdf8",
+};
+
+const metricLabel = {
+  fontSize: 12,
+  color: "#8b949e",
+  marginTop: 5,
+};
+
+const listItem = {
+  fontSize: 14,
+  marginBottom: 8,
+  color: "#d1d5db",
+};
+
+const placeholder = {
+  height: 180,
+  backgroundColor: "#0f172a",
+  borderRadius: 6,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#475569",
+  fontSize: 13,
+};
+
+const placeholderSmall = {
+  height: 120,
+  backgroundColor: "#0f172a",
+  borderRadius: 6,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#475569",
+  fontSize: 13,
 };
