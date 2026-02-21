@@ -54,32 +54,44 @@ export default function SignalsDashboard() {
             <div style={sectionHeader}>EMERGING STORY CLUSTERS</div>
 
             <div style={clusterGrid}>
-              <div style={clusterCard}>
+              <div style={clusterCard} className="cluster-card">
                 <div style={clusterTitle}>MIDDLE EAST ESCALATION</div>
-                <div style={clusterMeta}>7 Sources • Accelerating</div>
+                <div style={clusterMeta}>
+                  7 Sources • <span style={acceleratingTrend}>⇈ Accelerating</span>
+                  </div>
               </div>
 
-              <div style={clusterCard}>
+              <div style={clusterCard} className="cluster-card">
                 <div style={clusterTitle}>AI REGULATION</div>
-                <div style={clusterMeta}>5 Sources • Stable</div>
+                <div style={clusterMeta}>
+                  5 Sources • <span style={stableTrend}>→ Stable</span>
+                  </div>
               </div>
 
-              <div style={clusterCard}>
+              <div style={clusterCard} className="cluster-card">
                 <div style={clusterTitle}>OIL PRICE VOLATILITY</div>
-                <div style={clusterMeta}>6 Sources • Rising</div>
+                <div style={clusterMeta}>
+                6 Sources • <span style={risingTrend}>↑ Rising</span>
+                </div>
               </div>
 
-              <div style={clusterCard}>
+              <div style={clusterCard} className="cluster-card">
                 <div style={clusterTitle}>GLOBAL TRADE TENSIONS</div>
-                <div style={clusterMeta}>4 Sources • Emerging</div>
+                <div style={clusterMeta}>
+                  4 Sources • <span style={emergingTrend}>↗ Emerging</span>
+                  </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </>
-  );
-}
+    <style jsx>{`
+  .cluster-card:hover {
+    transform: translateY(-4px);
+    border: 1px solid rgba(78,161,255,0.35);
+    box-shadow: 0 0 20px rgba(78,161,255,0.15);
+  }
+`}</style>
 
 /* ===========================
    STYLES
@@ -207,9 +219,11 @@ const clusterGrid = {
 const clusterCard = {
   background: "linear-gradient(145deg, #0c1a2b, #08121d)",
   border: "1px solid rgba(78,161,255,0.15)",
-  padding: 20,
+  padding: 22,
   borderRadius: 8,
-  transition: "all 0.2s ease",
+  transition: "all 0.25s ease",
+  cursor: "pointer",
+  position: "relative"
 };
 
 const clusterTitle = {
@@ -222,4 +236,34 @@ const clusterTitle = {
 const clusterMeta = {
   fontSize: 12,
   color: "rgba(255,255,255,0.5)",
+};
+
+const emergingTrend = {
+  color: "rgba(78, 161, 255, 0.85)", // soft cyan
+  fontWeight: 500
+};
+
+const risingTrend = {
+  color: "rgba(72, 187, 120, 0.85)", // muted green
+  fontWeight: 500
+};
+
+const acceleratingTrend = {
+  color: "rgba(255, 99, 99, 0.85)", // soft red
+  fontWeight: 500
+};
+
+const stableTrend = {
+  color: "rgba(120, 160, 255, 0.75)", // neutral blue
+  fontWeight: 500
+};
+
+const coolingTrend = {
+  color: "rgba(160, 160, 160, 0.7)", // soft grey
+  fontWeight: 500
+};
+
+const fallingTrend = {
+  color: "rgba(220, 80, 80, 0.8)", // muted red
+  fontWeight: 500
 };
