@@ -14,7 +14,6 @@ export default function SignalsDashboard() {
         </div>
 
         <div style={grid}>
-
           {/* Global Heat Map */}
           <div style={panelLarge}>
             <div style={panelTitle}>Global Narrative Heat Map</div>
@@ -51,13 +50,31 @@ export default function SignalsDashboard() {
           </div>
 
           {/* Emerging Story Clusters */}
-          <div style={panelWide}>
-            <div style={panelTitle}>Emerging Story Clusters</div>
-            <div style={placeholder}>
-              Narrative clustering and keyword grouping will appear here.
+          <div style={clusterSection}>
+            <div style={sectionHeader}>EMERGING STORY CLUSTERS</div>
+
+            <div style={clusterGrid}>
+              <div style={clusterCard}>
+                <div style={clusterTitle}>MIDDLE EAST ESCALATION</div>
+                <div style={clusterMeta}>7 Sources • Accelerating</div>
+              </div>
+
+              <div style={clusterCard}>
+                <div style={clusterTitle}>AI REGULATION</div>
+                <div style={clusterMeta}>5 Sources • Stable</div>
+              </div>
+
+              <div style={clusterCard}>
+                <div style={clusterTitle}>OIL PRICE VOLATILITY</div>
+                <div style={clusterMeta}>6 Sources • Rising</div>
+              </div>
+
+              <div style={clusterCard}>
+                <div style={clusterTitle}>GLOBAL TRADE TENSIONS</div>
+                <div style={clusterMeta}>4 Sources • Emerging</div>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </>
@@ -168,4 +185,41 @@ const placeholderSmall = {
   justifyContent: "center",
   color: "#475569",
   fontSize: 13,
+};
+
+const clusterSection = {
+  marginTop: 60,
+};
+
+const sectionHeader = {
+  fontSize: 13,
+  letterSpacing: 2,
+  color: "#4ea1ff",
+  marginBottom: 25,
+};
+
+const clusterGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: 20,
+};
+
+const clusterCard = {
+  background: "linear-gradient(145deg, #0c1a2b, #08121d)",
+  border: "1px solid rgba(78,161,255,0.15)",
+  padding: 20,
+  borderRadius: 8,
+  transition: "all 0.2s ease",
+};
+
+const clusterTitle = {
+  fontSize: 14,
+  fontWeight: 600,
+  letterSpacing: 1,
+  marginBottom: 8,
+};
+
+const clusterMeta = {
+  fontSize: 12,
+  color: "rgba(255,255,255,0.5)",
 };
