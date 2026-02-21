@@ -85,13 +85,18 @@ export default function SignalsDashboard() {
           </div>
         </div>
       </div>
-    <style jsx>{`
+
+
+      <style jsx>{`
   .cluster-card:hover {
     transform: translateY(-4px);
     border: 1px solid rgba(78,161,255,0.35);
     box-shadow: 0 0 20px rgba(78,161,255,0.15);
   }
 `}</style>
+    </>
+  );
+}
 
 /* ===========================
    STYLES
