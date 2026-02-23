@@ -1,10 +1,16 @@
 import Head from "next/head";
 import Link from "next/link";
+import GlobalHeatMap from "../../components/GlobalHeatMap";
 import { useEffect, useState } from "react";
+import RegionIntelligencePanel from "../../components/RegionIntelligencePanel";
 
 export default function SignalsDashboard() {
   const [clusters, setClusters] = useState([]);
   const [overview, setOverview] = useState(null);
+
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+
   const acceleratingClusters = Array.isArray(clusters)
     ? clusters
         .filter((c) => c.momentum === "accelerating")
@@ -64,59 +70,32 @@ export default function SignalsDashboard() {
           <div style={subtitle}>Global Narrative Monitoring System</div>
         </div>
 
+        {overview?.narrativeSummary && (
+          <div
+            style={{
+              marginTop: 20,
+              padding: 20,
+              background: "#0f172a",
+              borderRadius: 8,
+              fontSize: 14,
+              lineHeight: 1.6,
+              color: "#d1d5db",
+              borderLeft: "3px solid #4ea1ff",
+            }}
+          >
+            {overview.narrativeSummary}
+          </div>
+        )}
+
         <div style={grid}>
           <div style={panelLarge}>
             <div style={panelTitle}>Global Narrative Heat Map</div>
+
             {!overview?.regionalSpread?.length ? (
               <div style={placeholder}>No regional signal data yet.</div>
             ) : (
               <div style={{ marginTop: 10 }}>
-                {(() => {
-                  const total =
-                    overview.regionalSpread.reduce(
-                      (s, r) => s + (r.count || 0),
-                      0,
-                    ) || 1;
-
-                  return overview.regionalSpread.slice(0, 10).map((r) => {
-                    const pct = Math.round(((r.count || 0) / total) * 100);
-                    return (
-                      <div key={r.region} style={{ marginBottom: 10 }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            fontSize: 12,
-                            opacity: 0.85,
-                          }}
-                        >
-                          <span>{r.region}</span>
-                          <span>
-                            {r.count} ({pct}%)
-                          </span>
-                        </div>
-
-                        <div
-                          style={{
-                            height: 8,
-                            borderRadius: 8,
-                            background: "rgba(255,255,255,0.08)",
-                            overflow: "hidden",
-                            marginTop: 6,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: `${pct}%`,
-                              height: "100%",
-                              background: "rgba(78,161,255,0.7)",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  });
-                })()}
+                <GlobalHeatMap data={overview.regionalSpread} />
               </div>
             )}
           </div>
@@ -184,6 +163,41 @@ export default function SignalsDashboard() {
                 <div key={r.region} style={listItem}>
                   • {r.region}{" "}
                   <span style={{ opacity: 0.65 }}>({r.count})</span>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div style={panel}>
+            <div style={panelTitle}>Geopolitical Pressure Index</div>
+
+            {!overview?.geopoliticalPressure ? (
+              <div style={listItem}>Loading pressure index...</div>
+            ) : (
+              overview.geopoliticalPressure.slice(0, 5).map((r) => (
+                <div
+                  key={r.region}
+                  style={{ ...listItem, cursor: "pointer" }}
+                  onClick={() => {
+                    fetch(`http://localhost:3001/signals/region/${r.region}`)
+                      .then((res) => res.json())
+                      .then((data) => {
+                        setSelectedRegion(data);
+                        setPanelOpen(true);
+                      });
+                  }}
+                >
+                  <strong>{r.region}</strong>
+
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>
+                    Narrative: {r.narrativePressure}
+                    {" | "}
+                    Risk: {r.riskPressure}
+                    {" | "}
+                    Strategic: {r.strategicPressure}
+                    {" | "}
+                    Market: {r.marketPressure}
+                  </div>
                 </div>
               ))
             )}
@@ -293,6 +307,12 @@ export default function SignalsDashboard() {
           box-shadow: 0 0 20px rgba(78, 161, 255, 0.15);
         }
       `}</style>
+
+      <RegionIntelligencePanel
+        regionData={selectedRegion}
+        open={panelOpen}
+        onClose={() => setPanelOpen(false)}
+      />
     </>
   );
 }
