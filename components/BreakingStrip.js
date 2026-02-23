@@ -16,7 +16,9 @@ export default function BreakingStrip({ items = [] }) {
         <div style={track} className="breakingTrack">
           {/* duplicate for seamless loop */}
           {text.concat(text).map((t, idx) => (
-            <span key={idx} style={item}>{t}</span>
+            <span key={idx} style={item}>
+              {t}
+            </span>
           ))}
         </div>
       </div>
@@ -29,8 +31,12 @@ export default function BreakingStrip({ items = [] }) {
           animation-play-state: paused;
         }
         @keyframes scroll {
-          0%   { transform: translateX(0%); }
-          100% { transform: translateX(-50%); }
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </div>
@@ -40,34 +46,37 @@ export default function BreakingStrip({ items = [] }) {
 const bar = {
   display: "flex",
   alignItems: "center",
-  background: "#111",
-  color: "#fff",
+  background: "#f5f5f5",      // light gray instead of black
+  color: "#111",              // black text
   overflow: "hidden",
-  borderRadius: 10,
-  marginBottom: 18
+  marginTop: 24,
+  marginBottom: 24,
+  borderBottom: "1px solid #e2e2e2",  // subtle divider
 };
 
 const label = {
   background: "#c40000",
-  padding: "10px 18px",
+  color: "#fff",
+  padding: "6px 16px",     // slimmer height
   fontWeight: 900,
   letterSpacing: 0.6,
-  flexShrink: 0
+  flexShrink: 0,
 };
 
 const scroll = {
   overflow: "hidden",
   whiteSpace: "nowrap",
-  flex: 1
+  flex: 1,
 };
 
 const track = {
   display: "inline-flex",
-  alignItems: "center"
+  alignItems: "center",
 };
 
 const item = {
   marginRight: 60,
   fontSize: 14,
-  opacity: 0.95
+  color: "#111",          // solid black
+  letterSpacing: "0.3px", // subtle refinement
 };

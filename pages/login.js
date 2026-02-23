@@ -1,4 +1,6 @@
 import { useState } from "react";
+import TopNav from "../components/TopNav";
+import Image from "next/image";
 
 const API = process.env.NEXT_PUBLIC_API_BASE;
 
@@ -23,11 +25,25 @@ export default function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "100px auto" }}>
-      <h1>Login</h1>
-      <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-      <button onClick={login}>Login</button>
-    </div>
+    <>
+      <TopNav
+        active="/login"
+        logoImg={
+          <Image
+            src="/logo.png"
+            alt="NewsTrac Logo"
+            width={34}
+            height={34}
+          />
+        }
+      />
+
+      <div style={{ maxWidth: 400, margin: "100px auto" }}>
+        <h1>Login</h1>
+        <input placeholder="Email" onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+        <button onClick={login}>Login</button>
+      </div>
+    </>
   );
 }

@@ -3,6 +3,8 @@ import Link from "next/link";
 import GlobalHeatMap from "../../components/GlobalHeatMap";
 import { useEffect, useState } from "react";
 import RegionIntelligencePanel from "../../components/RegionIntelligencePanel";
+import TopNav from "../../components/TopNav";
+import Image from "next/image";
 
 export default function SignalsDashboard() {
   const [clusters, setClusters] = useState([]);
@@ -64,12 +66,14 @@ export default function SignalsDashboard() {
         <title>NewsTrac Intelligence</title>
       </Head>
 
-      <div style={page}>
-        <div style={header}>
-          <h1 style={title}>NewsTrac Intelligence</h1>
-          <div style={subtitle}>Global Narrative Monitoring System</div>
-        </div>
+      <TopNav
+        active="/signals"
+        logoImg={
+          <Image src="/logo.png" alt="NewsTrac Logo" width={34} height={34} />
+        }
+      />
 
+      <div style={page}>
         {overview?.narrativeSummary && (
           <div
             style={{
@@ -324,21 +328,7 @@ const page = {
   minHeight: "100vh",
   color: "#e6edf3",
   fontFamily: "Inter, system-ui, sans-serif",
-  padding: "40px 30px",
-};
-
-const header = { marginBottom: 40 };
-
-const title = {
-  fontSize: 28,
-  fontWeight: 500,
-  letterSpacing: "0.5px",
-};
-
-const subtitle = {
-  fontSize: 14,
-  color: "#8b949e",
-  marginTop: 6,
+  padding: "30px 30px",
 };
 
 const grid = {

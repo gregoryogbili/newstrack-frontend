@@ -8,12 +8,37 @@ import HeroSplit from "../components/HeroSplit";
 import JournalistCallout from "../components/JournalistCallout";
 import SiteFooter from "../components/SiteFooter";
 import he from "he";
+import TopNav from "../components/TopNav";
 
 const API = process.env.NEXT_PUBLIC_API;
 
 export default function Home() {
   const [feed, setFeed] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [q, setQ] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  async function runSearch() {
+    const term = (q || "").trim();
+    if (!term) {
+      setSearchResults(null);
+      return;
+    }
+
+    setSearchLoading(true);
+    try {
+      const res = await fetch(`${API}/search?q=${encodeURIComponent(term)}`);
+      const data = await res.json();
+      setSearchResults(Array.isArray(data) ? data : data?.items || []);
+    } catch (e) {
+      console.error(e);
+      setSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+    }
+  }
 
   useEffect(() => {
     fetch(`${API}/feed`)
@@ -38,17 +63,24 @@ export default function Home() {
       }
     }
 
-    return unique; 
+    return unique;
   }, [feed]);
 
-  console.log("Sorted feed:", sorted.map(i => i.source_name));
+  console.log(
+    "Sorted feed:",
+    sorted.map((i) => i.source_name),
+  );
 
-  const breakingItems = sorted.slice(0, 10);   // top 10
-  const heroItems = sorted.slice(10, 16);      // next 6
-  const redditItems = sorted.filter(i => i.source_name.includes("Reddit")).slice(0, 2);
-  const normalTrending = sorted.filter(i => !i.source_name.includes("Reddit")).slice(16, 22);
+  const breakingItems = sorted.slice(0, 10); // top 10
+  const heroItems = sorted.slice(10, 16); // next 6
+  const redditItems = sorted
+    .filter((i) => i.source_name.includes("Reddit"))
+    .slice(0, 2);
+  const normalTrending = sorted
+    .filter((i) => !i.source_name.includes("Reddit"))
+    .slice(16, 22);
   const trending = [...normalTrending, ...redditItems];
-  const latest = sorted.slice(24, 120);        // everything else
+  const latest = sorted.slice(24, 120); // everything else
 
   return (
     <div style={container}>
@@ -61,28 +93,63 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-
-      {/* HEADER */}
-      <header style={header}>
-        <div style={logoWrap}>
-          <Image src="/logo.png" alt="NewsTrac Logo" width={40} height={40} priority />
-          <h1 style={logoText}>NewsTrac</h1>
-        </div>
-
-        <Link href="/login" style={navButton}>Login</Link>
-      </header>
+      <TopNav
+        active="/"
+        logoImg={
+          <Image
+            src="/logo.png"
+            alt="NewsTrac Logo"
+            width={40}
+            height={40}
+            priority
+          />
+        }
+      />
 
       <BreakingStrip items={breakingItems} />
-      <HeroSplit items={heroItems} loading={loading} />
 
-      {/* CATEGORY TABS (UNDER HERO) */}
-      <div style={categoryWrap}>
-        <Link href="/world" style={categoryTab}>World</Link>
-        <Link href="/politics" style={categoryTab}>Politics</Link>
-        <Link href="/economy" style={categoryTab}>Economy</Link>
-        <Link href="/technology" style={categoryTab}>Technology</Link>
-        <Link href="/live" style={liveTab}>LIVE</Link>
+      <div style={{ marginBottom: 34 }}>
+        <HeroSplit items={heroItems} loading={loading} />
       </div>
+
+      <div style={searchRow}>
+        <input
+          style={searchInput}
+          placeholder="Search NewsTrac (headlines, topics, places...)"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") runSearch();
+          }}
+        />
+        <button style={searchBtn} onClick={runSearch}>
+          Search
+        </button>
+      </div>
+
+      {searchResults && (
+        <div style={{ marginTop: 18 }}>
+          <div style={searchHeader}>
+            Search results for: <b>{q}</b>{" "}
+            {searchLoading ? " (loading...)" : ""}
+            <button
+              style={clearBtn}
+              onClick={() => {
+                setSearchResults(null);
+                setQ("");
+              }}
+            >
+              Clear
+            </button>
+          </div>
+
+          <div className="newsGrid">
+            {searchResults.map((item) => (
+              <ArticleCard key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* TRENDING */}
       <h2 style={sectionTitle}>Trending</h2>
@@ -98,7 +165,7 @@ export default function Home() {
         {latest.slice(0, 20).map((item, index) => (
           <>
             <ArticleCard key={item.id} item={item} />
-            {(index === 7) && <AdCard key="ad-1" />}
+            {index === 7 && <AdCard key="ad-1" />}
           </>
         ))}
       </div>
@@ -109,7 +176,7 @@ export default function Home() {
         {latest.slice(20).map((item, index) => (
           <>
             <ArticleCard key={item.id} item={item} />
-            {(index === 3) && <AdCard key="ad-2" />}
+            {index === 3 && <AdCard key="ad-2" />}
           </>
         ))}
       </div>
@@ -137,15 +204,8 @@ export default function Home() {
           }
         }
 
-        a:hover {
-          background: #ffffff !important;
-          color: #000000 !important;
-          border-color: #000000 !important;
-          transition: all 0.2s ease;
-}
-
-     `}</style>
-
+        
+      `}</style>
     </div>
   );
 }
@@ -188,26 +248,26 @@ const container = {
   maxWidth: "1200px",
   margin: "0 auto",
   padding: "20px",
-  fontFamily: "'Inter', sans-serif"
+  fontFamily: "'Inter', sans-serif",
 };
 
 const header = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  marginBottom: 20
+  marginBottom: 20,
 };
 
 const logoWrap = {
   display: "flex",
   alignItems: "center",
-  gap: 10
+  gap: 10,
 };
 
 const logoText = {
   fontSize: 24,
   fontWeight: 800,
-  margin: 0
+  margin: 0,
 };
 
 const navButton = {
@@ -216,7 +276,7 @@ const navButton = {
   borderRadius: 8,
   textDecoration: "none",
   color: "#000",
-  fontWeight: 600
+  fontWeight: 600,
 };
 
 /* CATEGORY TABS */
@@ -226,7 +286,7 @@ const categoryWrap = {
   gap: "16px",
   marginTop: 20,
   marginBottom: 30,
-  flexWrap: "wrap"
+  flexWrap: "wrap",
 };
 
 const categoryTab = {
@@ -240,7 +300,7 @@ const categoryTab = {
   color: "#111",
   fontWeight: 700,
   transition: "all 0.2s ease",
-  cursor: "pointer"
+  cursor: "pointer",
 };
 
 const liveTab = {
@@ -253,19 +313,19 @@ const liveTab = {
   textDecoration: "none",
   color: "#ffffff",
   fontWeight: 800,
-  letterSpacing: 0.5
+  letterSpacing: 0.5,
 };
 
 /* GRID */
 
 const sectionTitle = {
-  marginTop: 30,
-  marginBottom: 20,
+  marginTop: 0,
+  marginBottom: 22,
   fontSize: 24,
   fontWeight: 800,
   fontFamily: "'Playfair Display', serif",
   borderLeft: "4px solid #c40000",
-  paddingLeft: "10px"
+  paddingLeft: "10px",
 };
 
 /* CARD */
@@ -274,13 +334,13 @@ const card = {
   border: "1px solid #d6d6d6",
   borderRadius: 8,
   padding: 14,
-  background: "#ffffff",
+  background: "#f5f5f5",
   minHeight: 210,
   height: "100%",
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-start",
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 };
 
 const cardTitle = {
@@ -288,14 +348,14 @@ const cardTitle = {
   fontSize: 20,
   fontWeight: 700,
   marginBottom: 8,
-  lineHeight: 1.3
+  lineHeight: 1.3,
 };
 
 const cardSnippet = {
   fontSize: 14,
   lineHeight: 1.5,
   color: "#444",
-  marginBottom: 14
+  marginBottom: 14,
 };
 
 const readMore = {
@@ -305,7 +365,7 @@ const readMore = {
   cursor: "pointer",
   textAlign: "left",
   padding: 0,
-  marginTop: "auto"
+  marginTop: "auto",
 };
 
 /* AD */
@@ -321,18 +381,78 @@ const adCard = {
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  boxSizing: "border-box"
+  boxSizing: "border-box",
 };
 
 const adLabel = {
   fontSize: 12,
   fontWeight: 700,
   color: "#777",
-  marginBottom: 10
+  marginBottom: 10,
 };
 
 const adContent = {
   fontSize: 16,
   fontWeight: 600,
-  color: "#333"
+  color: "#333",
+};
+
+const searchRow = {
+  maxWidth: 600,
+  margin: "0 0 8px auto",
+  padding: "0 18px",
+  display: "grid",
+  gridTemplateColumns: "1fr auto",
+  gap: 10,
+  alignItems: "center"
+};
+
+const searchInput = {
+  height: 36,
+  borderRadius: 8,
+  border: "1px solid #d9d9d9",
+  padding: "0 14px",
+  fontSize: 14,
+  outline: "none",
+  background: "#fff"
+};
+
+const searchBtn = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: 36,
+  padding: "0 16px",
+  borderRadius: 8,
+  border: "1px solid #cfcfcf",
+  background: "#fff",
+  color: "#111",
+  fontWeight: 800,
+  fontSize: 14,
+  fontFamily: "'Inter', sans-serif",   // 🔴 IMPORTANT
+  lineHeight: "1",                     // 🔴 prevents vertical shift
+  letterSpacing: "0",                  // 🔴 prevents subtle difference
+  cursor: "pointer",
+  transition: "all 0.2s ease"
+};
+
+const searchHeader = {
+  maxWidth: 1180,
+  margin: "0 auto",
+  padding: "0 18px",
+  display: "flex",
+  gap: 10,
+  alignItems: "center",
+  color: "#111"
+};
+
+const clearBtn = {
+  marginLeft: "auto",
+  height: 34,
+  padding: "0 12px",
+  borderRadius: 8,
+  border: "1px solid #d9d9d9",
+  background: "#fff",
+  fontWeight: 800,
+  cursor: "pointer"
 };
