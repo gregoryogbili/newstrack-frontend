@@ -133,6 +133,8 @@ const wrap = {
   background: "#fff",
   marginBottom: 18,
   overflowX: "hidden",
+  position: "relative",
+  zIndex: 1
 };
 
 const inner = {

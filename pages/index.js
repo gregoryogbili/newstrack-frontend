@@ -258,6 +258,8 @@ const container = {
   margin: "0 auto",
   padding: "20px",
   fontFamily: "'Inter', sans-serif",
+  position: "relative",
+  zIndex: 0,
 };
 
 const header = {
