@@ -21,9 +21,9 @@ export default function TopNav({
 
   return (
     <header style={wrap}>
-      <div style={inner}>
+      <div style={inner} className="topnav-inner">
         {/* Left: logo */}
-        <Link href="/" style={brand}>
+        <Link href="/" style={brand} className="topnav-brand">
           <span style={logoBox}>
             {/* Keep your existing image exactly: pass it in from each page */}
             {logoImg ? logoImg : <span style={logoFallback} />}
@@ -36,7 +36,7 @@ export default function TopNav({
         </Link>
 
         {/* Middle: nav buttons */}
-        <nav style={nav}>
+        <nav style={nav} className="topnav-nav">
           {links.map((l) => {
             const isActive = active === l.href;
             const isLive = !!l.isLive;
@@ -62,11 +62,44 @@ export default function TopNav({
               color: #fff !important;
               border-color: #111 !important;
             }
+
+            /* Mobile layout */
+            @media (max-width: 768px) {
+              .topnav-inner {
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas:
+                  "brand right"
+                  "nav nav";
+                row-gap: 10px;
+              }
+
+              .topnav-brand {
+                grid-area: brand;
+              }
+
+              .topnav-nav {
+                grid-area: nav;
+                justify-self: stretch;
+                justify-content: center;
+              }
+
+              .topnav-right {
+                grid-area: right;
+              }
+
+              /* Make buttons smaller so 2-per-row fits */
+              .topnav-nav a {
+                min-width: 96px;
+                height: 34px;
+                padding: 0 12px;
+                font-size: 13px;
+              }
+            }
           `}</style>
         </nav>
 
         {/* Right: login + optional slot */}
-        <div style={right}>
+        <div style={right} className="topnav-right">
           {rightSlot}
 
           <Link href="/login" style={loginBtn}>
