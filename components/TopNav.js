@@ -87,7 +87,6 @@ export default function TopNav({
 
               .topnav-nav {
                 grid-area: nav;
-                justify-self: stretch;
                 width: 100%;
                 justify-content: flex-start; /* important */
                 flex-wrap: nowrap;
@@ -151,7 +150,6 @@ const inner = {
   padding: "18px 18px 10px",
   boxSizing: "border-box",
   display: "grid",
-  gridTemplateColumns: "1fr auto 1fr",
   alignItems: "center",
   gap: 14,
 };
@@ -195,13 +193,10 @@ const news = { color: "#111" };
 const trac = { color: "#b80000" };
 
 const nav = {
-  justifySelf: "center",
+  justifySelf: "stretch",
   display: "flex",
   gap: 8,
   alignItems: "center",
-  flexWrap: "nowrap",
-  width: "100%",
-  justifyContent: "center",
 };
 
 const navBtn = {
