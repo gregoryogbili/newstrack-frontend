@@ -203,8 +203,6 @@ export default function Home() {
             grid-template-columns: 1fr;
           }
         }
-
-        
       `}</style>
     </div>
   );
@@ -213,8 +211,19 @@ export default function Home() {
 /* ARTICLE CARD */
 function ArticleCard({ item }) {
   const openFull = () => {
-    const url = item?.source_url || item?.url;
-    if (url) window.open(url, "_blank");
+    const url =
+      item?.source_url ||
+      item?.url ||
+      item?.link ||
+      item?.sourceUrl ||
+      item?.original_url;
+
+    if (!url) {
+      alert("Article link not available.");
+      return;
+    }
+
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -404,7 +413,7 @@ const searchRow = {
   display: "grid",
   gridTemplateColumns: "1fr auto",
   gap: 10,
-  alignItems: "center"
+  alignItems: "center",
 };
 
 const searchInput = {
@@ -414,7 +423,7 @@ const searchInput = {
   padding: "0 14px",
   fontSize: 14,
   outline: "none",
-  background: "#fff"
+  background: "#fff",
 };
 
 const searchBtn = {
@@ -429,11 +438,11 @@ const searchBtn = {
   color: "#111",
   fontWeight: 800,
   fontSize: 14,
-  fontFamily: "'Inter', sans-serif",   // 🔴 IMPORTANT
-  lineHeight: "1",                     // 🔴 prevents vertical shift
-  letterSpacing: "0",                  // 🔴 prevents subtle difference
+  fontFamily: "'Inter', sans-serif", // 🔴 IMPORTANT
+  lineHeight: "1", // 🔴 prevents vertical shift
+  letterSpacing: "0", // 🔴 prevents subtle difference
   cursor: "pointer",
-  transition: "all 0.2s ease"
+  transition: "all 0.2s ease",
 };
 
 const searchHeader = {
@@ -443,7 +452,7 @@ const searchHeader = {
   display: "flex",
   gap: 10,
   alignItems: "center",
-  color: "#111"
+  color: "#111",
 };
 
 const clearBtn = {
@@ -454,5 +463,5 @@ const clearBtn = {
   border: "1px solid #d9d9d9",
   background: "#fff",
   fontWeight: 800,
-  cursor: "pointer"
+  cursor: "pointer",
 };
