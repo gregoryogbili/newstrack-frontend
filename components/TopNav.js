@@ -133,12 +133,15 @@ const wrap = {
   width: "100%",
   background: "#fff",
   marginBottom: 18,
+  overflowX: "hidden",
 };
 
 const inner = {
+  width: "100%",
   maxWidth: 1180,
   margin: "0 auto",
   padding: "18px 18px 10px",
+  boxSizing: "border-box",
   display: "grid",
   gridTemplateColumns: "1fr auto 1fr",
   alignItems: "center",
