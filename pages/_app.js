@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
 import Head from "next/head";
 
 export default function MyApp({ Component, pageProps }) {
@@ -16,6 +16,13 @@ export default function MyApp({ Component, pageProps }) {
           rel="stylesheet"
         />
       </Head>
+
+      <style jsx global>{`
+        html,
+        body {
+          overflow-x: hidden;
+        }
+      `}</style>
 
       <Component {...pageProps} />
     </>

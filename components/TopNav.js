@@ -97,9 +97,10 @@ export default function TopNav({
 
               /* Make nav buttons smaller so they fit cleanly */
               .topnav-nav a {
-                min-width: 90px;
+                min-width: auto;
+                width: 100%;
                 height: 34px;
-                padding: 0 12px;
+                padding: 0 10px;
                 font-size: 13px;
               }
 
@@ -185,9 +186,11 @@ const trac = { color: "#b80000" };
 const nav = {
   justifySelf: "center",
   display: "flex",
-  gap: 12,
+  gap: 8,
   alignItems: "center",
   flexWrap: "wrap",
+  width: "100%",
+  justifyContent: "center",
 };
 
 const navBtn = {
