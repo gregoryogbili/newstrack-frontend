@@ -66,47 +66,46 @@ export default function TopNav({
             /* Mobile layout */
             @media (max-width: 768px) {
               .topnav-inner {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 grid-template-areas:
-                  "brand right"
-                  "nav nav";
-                row-gap: 10px;
-                padding: 12px 12px 10px; /* tighter */
+                  "brand"
+                  "right"
+                  "nav";
+                row-gap: 8px;
+                padding: 12px;
               }
 
               .topnav-brand {
                 grid-area: brand;
-              }
-
-              /* shrink “NewsTrac” text on mobile */
-              .topnav-brand span:last-child {
-                font-size: 20px;
-              }
-
-              .topnav-nav {
-                grid-area: nav;
-                justify-self: stretch;
                 justify-content: center;
-                gap: 8px;
               }
 
               .topnav-right {
                 grid-area: right;
-                justify-content: flex-end;
+                justify-content: center;
               }
 
-              /* Make nav buttons smaller so they fit cleanly */
+              .topnav-nav {
+                grid-area: nav;
+                justify-content: center;
+                flex-wrap: nowrap; /* prevent wrapping */
+                overflow-x: auto; /* allow scroll if needed */
+              }
+
               .topnav-nav a {
-                min-width: auto;
-                width: 100%;
-                height: 34px;
-                padding: 0 10px;
+                min-width: auto; /* remove forced width */
+                width: auto;
+                height: 32px;
+                padding: 0 12px;
                 font-size: 13px;
               }
 
-              /* Make login match the smaller rhythm */
+              .topnav-brand span:last-child {
+                font-size: 20px;
+              }
+
               .topnav-right a {
-                height: 34px;
+                height: 32px;
                 padding: 0 12px;
                 font-size: 13px;
               }
@@ -191,7 +190,7 @@ const nav = {
   display: "flex",
   gap: 8,
   alignItems: "center",
-  flexWrap: "wrap",
+  flexWrap: "nowrap",
   width: "100%",
   justifyContent: "center",
 };
