@@ -222,7 +222,7 @@ function ArticleCard({ item }) {
       <h3 style={cardTitle}>{he.decode(item.headline)}</h3>
       <p style={cardSnippet}>
         {item.summary
-          ? he.decode(item.summary).slice(0, 170) + "..."
+          ? he.decode(item.summary).slice(0, 130) + "..."
           : "Click to read the full article."}
       </p>
       <button style={readMore} onClick={openFull}>

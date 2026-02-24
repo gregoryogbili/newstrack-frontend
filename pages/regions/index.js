@@ -80,7 +80,7 @@ function RegionBlock({ regionData }) {
   }
 
   return (
-    <div style={{ marginBottom: 40 }}>
+    <div style={{ marginBottom: 18 }}>
       <h2 style={sectionTitle}>{region}</h2>
 
       <div style={regionSub}>Dominant Regional Signals</div>
@@ -100,7 +100,7 @@ function RegionBlock({ regionData }) {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 22px;
-            margin-bottom: 30px;
+            margin-bottom: 12px;
             align-items: stretch;
           }
 
@@ -119,7 +119,7 @@ function RegionBlock({ regionData }) {
         `}</style>
       </div>
 
-      <div style={{ textAlign: "center", marginTop: 20, marginBottom: 20 }}>
+      <div style={{ textAlign: "center", marginTop: 10, marginBottom: 20 }}>
         {stage < 3 && (
           <button style={expandBtn} onClick={() => setStage(stage + 1)}>
             {stage === 1 ? "Expand Signal Field" : "View Full Regional Dump"}
@@ -135,6 +135,7 @@ function RegionBlock({ regionData }) {
           </button>
         )}
       </div>
+      <div style={regionDivider}></div>
     </div>
   );
 }
@@ -152,7 +153,7 @@ function ArticleCard({ item }) {
       <h3 style={cardTitle}>{he.decode(item.headline)}</h3>
       <p style={cardSnippet}>
         {item.summary
-          ? he.decode(item.summary).slice(0, 170) + "..."
+          ? he.decode(item.summary).slice(0, 130) + "..."
           : "Click to read the full article."}
       </p>
       <button style={readMore} onClick={openFull}>
@@ -216,15 +217,23 @@ const expandBtn = {
   cursor: "pointer",
 };
 
+const regionDivider = {
+  height: 1,
+  background: "#e5e5e5",
+  marginTop: 10,
+};
+
 const card = {
   border: "1px solid #d6d6d6",
   borderRadius: 8,
   padding: 14,
   background: "#f5f5f5",
-  minHeight: 240,
+  minHeight: 210,
+  height: "100%",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
+  justifyContent: "flex-start",
+  boxSizing: "border-box",
 };
 
 const cardTitle = {

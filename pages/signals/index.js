@@ -6,6 +6,8 @@ import RegionIntelligencePanel from "../../components/RegionIntelligencePanel";
 import TopNav from "../../components/TopNav";
 import Image from "next/image";
 
+const API = process.env.NEXT_PUBLIC_API;
+
 export default function SignalsDashboard() {
   const [clusters, setClusters] = useState([]);
   const [overview, setOverview] = useState(null);
@@ -22,7 +24,7 @@ export default function SignalsDashboard() {
 
   useEffect(() => {
     // Fetch clusters
-    fetch("http://localhost:3001/clusters")
+    fetch(`${API}/clusters`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -35,7 +37,7 @@ export default function SignalsDashboard() {
       .catch((err) => console.error("Cluster fetch failed:", err));
 
     // Fetch macro overview
-    fetch("http://localhost:3001/signals/overview")
+    fetch(`${API}/signals/overview`)
       .then((res) => res.json())
       .then((data) => setOverview(data))
       .catch((err) => console.error("Overview fetch failed:", err));
@@ -218,7 +220,7 @@ export default function SignalsDashboard() {
                     key={r.region}
                     style={{ ...listItem, cursor: "pointer" }}
                     onClick={() => {
-                      fetch(`http://localhost:3001/signals/region/${r.region}`)
+                      fetch(`${API}/signals/region/${r.region}`)
                         .then((res) => res.json())
                         .then((data) => {
                           setSelectedRegion(data);
@@ -392,6 +394,16 @@ export default function SignalsDashboard() {
             padding: 18px 14px !important;
           }
         }
+
+        @media (max-width: 768px) {
+          .cluster-card {
+            padding: 14px !important;
+          }
+
+          .cluster-card div {
+            font-size: 12px !important;
+          }
+        }
       `}</style>
 
       <RegionIntelligencePanel
@@ -408,7 +420,7 @@ export default function SignalsDashboard() {
 const page = {
   maxWidth: "1200px",
   margin: "0 auto",
-  padding: "30px 20px",
+  padding: "20px",
   backgroundColor: "#0b1117",
   minHeight: "100vh",
   color: "#e6edf3",
