@@ -14,8 +14,8 @@ export default function TopNav({
 }) {
   const links = [
     { label: "Home", href: "/" },
-    { label: "Regions", href: "/regions" },
-    { label: "Intelligence", href: "/signals" },
+    { label: "Global", href: "/regions" },
+    { label: "Analytics", href: "/signals" },
     { label: "LIVE", href: "/live", isLive: true },
   ];
 

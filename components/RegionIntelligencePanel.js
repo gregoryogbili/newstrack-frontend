@@ -127,11 +127,12 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
         top: 0,
         right: 0,
         height: "100vh",
-        width: "420px",
+        width: "360px",
+        maxWidth: "85vw",
         background: "#0b1220",
         boxShadow: "-10px 0 40px rgba(0,0,0,0.6)",
         transform: open ? "translateX(0)" : "translateX(100%)",
-        transition: "transform 0.3s ease",
+        transition: "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
         zIndex: 9999,
         padding: "30px",
         overflowY: "auto",
@@ -224,13 +225,14 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
 
 /* Mini SVG Trend Graph */
 function MiniTrendGraph({ data }) {
-  const max = Math.max(...data.map((d) => d.count), 1);
+  const safe = Array.isArray(data) ? data : [];
+  const max = Math.max(1, ...safe.map((d) => d.count || 0));
   const width = 350;
   const height = 120;
 
-  const points = data.map((d, i) => {
+  const points = safe.map((d, i) => {
     const x = (i / 23) * width;
-    const y = height - (d.count / max) * height;
+    const y = height - ((d.count || 0) / max) * height;
     return `${x},${y}`;
   });
 
@@ -245,3 +247,4 @@ function MiniTrendGraph({ data }) {
     </svg>
   );
 }
+

@@ -290,8 +290,8 @@ const categoryWrap = {
 };
 
 const categoryTab = {
-  padding: "10px 18px",
-  minWidth: "110px",
+  padding: "6px 14px",
+  minWidth: "90px",
   textAlign: "center",
   background: "#f3f3f3",
   border: "1px solid #ddd",
@@ -304,8 +304,8 @@ const categoryTab = {
 };
 
 const liveTab = {
-  padding: "10px 18px",
-  minWidth: "110px",
+  padding: "6px 14px",
+  minWidth: "90px",
   textAlign: "center",
   background: "#c40000",
   border: "1px solid #a00000",

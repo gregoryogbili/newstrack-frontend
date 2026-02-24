@@ -62,7 +62,7 @@ export default function GlobalHeatMap({ data = [] }) {
         let color = "rgba(80,180,255,0.9)"; // default cool blue
 
         if (count > 70)
-          color = "rgba(255,90,90,0.9)"; // high pressure (red)
+          color = "rgba(255,0,0,0.95)"; // true hot red
         else if (count > 40)
           color = "rgba(255,170,60,0.9)"; // elevated (orange)
         else if (count > 20) color = "rgba(255,230,90,0.9)"; // moderate (yellow)
@@ -79,7 +79,7 @@ export default function GlobalHeatMap({ data = [] }) {
         dot.style.height = "100%";
         dot.style.borderRadius = "50%";
         dot.style.background = color;
-        dot.style.boxShadow = `0 0 10px ${color}`;
+        dot.style.boxShadow = `0 0 18px ${color}`;
 
         // subtle ring
         const ring = document.createElement("div");
@@ -89,7 +89,7 @@ export default function GlobalHeatMap({ data = [] }) {
         ring.style.width = "100%";
         ring.style.height = "100%";
         ring.style.borderRadius = "50%";
-        ring.style.border = `1.5px solid ${color}`;
+        ring.style.border = `2px solid ${color}`;
         ring.style.transform = "translate(-50%, -50%)";
 
         const speed = Math.max(1.6, 3 - count / 50);
@@ -125,7 +125,7 @@ export default function GlobalHeatMap({ data = [] }) {
       ref={mapContainer}
       style={{
         width: "100%",
-        height: "450px",
+        height: "100%",
         borderRadius: "8px",
       }}
     />
