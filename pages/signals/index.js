@@ -73,7 +73,7 @@ export default function SignalsDashboard() {
         }
       />
 
-      <div style={page}>
+      <div style={page} className="pageTight">
         {overview?.narrativeSummary && (
           <div
             style={{
@@ -108,7 +108,7 @@ export default function SignalsDashboard() {
           </div>
 
           {/* ===== ACCELERATION BAND ===== */}
-          <div style={rowBand}>
+          <div style={rowBand} className="rowBand">
             <div style={{ ...panel, gridColumn: "span 3" }}>
               <div style={panelTitle}>Signal Velocity Index</div>
               <div style={metric}>
@@ -206,7 +206,7 @@ export default function SignalsDashboard() {
           </div>
 
           {/* ===== PRESSURE BAND ===== */}
-          <div style={rowBand}>
+          <div style={rowBand} className="rowBand">
             <div style={{ ...panel, gridColumn: "span 6" }}>
               <div style={panelTitle}>Geopolitical Pressure Index</div>
 
@@ -369,6 +369,28 @@ export default function SignalsDashboard() {
         .cluster-card:not([data-momentum]):hover {
           border: 1px solid rgba(78, 161, 255, 0.35);
           box-shadow: 0 0 14px rgba(78, 161, 255, 0.2);
+        }
+
+        /* ---------------- MOBILE: make analytics readable ---------------- */
+        @media (max-width: 900px) {
+          .rowBand {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+            padding: 0 !important;
+          }
+
+          /* Force all panels to full-width (override inline span 3/span 6) */
+          .rowBand > div {
+            grid-column: span 12 !important;
+            min-height: auto !important;
+          }
+        }
+
+        @media (max-width: 650px) {
+          /* tighten page padding on small phones */
+          .pageTight {
+            padding: 18px 14px !important;
+          }
         }
       `}</style>
 

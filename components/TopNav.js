@@ -71,25 +71,40 @@ export default function TopNav({
                   "brand right"
                   "nav nav";
                 row-gap: 10px;
+                padding: 12px 12px 10px; /* tighter */
               }
 
               .topnav-brand {
                 grid-area: brand;
               }
 
+              /* shrink “NewsTrac” text on mobile */
+              .topnav-brand span:last-child {
+                font-size: 20px;
+              }
+
               .topnav-nav {
                 grid-area: nav;
                 justify-self: stretch;
                 justify-content: center;
+                gap: 8px;
               }
 
               .topnav-right {
                 grid-area: right;
+                justify-content: flex-end;
               }
 
-              /* Make buttons smaller so 2-per-row fits */
+              /* Make nav buttons smaller so they fit cleanly */
               .topnav-nav a {
-                min-width: 96px;
+                min-width: 90px;
+                height: 34px;
+                padding: 0 12px;
+                font-size: 13px;
+              }
+
+              /* Make login match the smaller rhythm */
+              .topnav-right a {
                 height: 34px;
                 padding: 0 12px;
                 font-size: 13px;
