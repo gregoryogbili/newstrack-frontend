@@ -56,8 +56,7 @@ export default function ClusterDetail() {
             </div>
           )}
           <div style={sub}>
-            This page will show grouped articles, sources, and momentum once we
-            connect real RSS data.
+            Aggregated cluster intelligence and cross-source coverage.
           </div>
         </div>
 
@@ -196,6 +195,8 @@ const page = {
   color: "#e6edf3",
   fontFamily: "Inter, system-ui, sans-serif",
   padding: "36px 30px",
+  maxWidth: "1200px",
+  margin: "0 auto",
 };
 
 const topBar = { marginBottom: 18 };

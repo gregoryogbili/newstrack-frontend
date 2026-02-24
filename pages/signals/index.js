@@ -114,21 +114,10 @@ export default function SignalsDashboard() {
               <div style={metric}>
                 {overview ? overview.velocityIndex : "--"}
               </div>
-              <div style={metricLabel}>6 Hour Acceleration</div>
-            </div>
-
-            <div style={{ ...panel, gridColumn: "span 6" }}>
-              <div style={panelTitle}>Top Accelerating Topics</div>
-
-              {acceleratingClusters.length === 0 ? (
-                <div style={listItem}>No strong acceleration detected</div>
-              ) : (
-                acceleratingClusters.map((c) => (
-                  <div key={c.slug} style={listItem}>
-                    • {c.title}
-                  </div>
-                ))
-              )}
+              <div style={metricLabel}>Change in global narrative activity</div>
+              <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
+                (0–100 scale, 6h window)
+              </div>
             </div>
 
             <div style={{ ...panel, gridColumn: "span 3" }}>
@@ -160,14 +149,17 @@ export default function SignalsDashboard() {
                   </div>
                 </div>
               )}
-              <div style={metricLabel}>Composite Risk Score</div>
+              <div style={metricLabel}>Market & Macro Risk</div>
+              <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
+                (0–100 scale, 6h window)
+              </div>
             </div>
-          </div>
 
-          {/* ===== PRESSURE BAND ===== */}
-          <div style={rowBand}>
             <div style={{ ...panel, gridColumn: "span 3" }}>
               <div style={panelTitle}>Regional Signal Spread</div>
+              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
+                Hot Regions
+              </div>
               {!overview || !overview.regionalSpread ? (
                 <div style={listItem}>Loading regional spread...</div>
               ) : overview.regionalSpread.length === 0 ? (
@@ -182,6 +174,39 @@ export default function SignalsDashboard() {
               )}
             </div>
 
+            <div style={{ ...panel, gridColumn: "span 3" }}>
+              <div style={panelTitle}>Most Divergent Stories</div>
+
+              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
+                Split Narratives
+              </div>
+
+              {!clusters.length ? (
+                <div style={listItem}>Loading clusters...</div>
+              ) : (
+                clusters
+                  .filter((c) => (c.divergenceScore ?? 0) >= 35)
+                  .sort(
+                    (a, b) =>
+                      (b.divergenceScore ?? 0) - (a.divergenceScore ?? 0),
+                  )
+                  .slice(0, 5)
+                  .map((c) => (
+                    <div key={c.slug} style={listItem}>
+                      <strong>{c.title}</strong>
+                      <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
+                        Divergence:{" "}
+                        <strong>{c.divergenceScore ?? 0}/100</strong> • Sources:{" "}
+                        {c.sourceCount ?? c.sources ?? "--"}
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
+
+          {/* ===== PRESSURE BAND ===== */}
+          <div style={rowBand}>
             <div style={{ ...panel, gridColumn: "span 6" }}>
               <div style={panelTitle}>Geopolitical Pressure Index</div>
 
@@ -237,29 +262,17 @@ export default function SignalsDashboard() {
               )}
             </div>
 
-            <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>Most Divergent Stories</div>
+            <div style={{ ...panel, gridColumn: "span 6" }}>
+              <div style={panelTitle}>Top Accelerating Topics</div>
 
-              {!clusters.length ? (
-                <div style={listItem}>Loading clusters...</div>
+              {acceleratingClusters.length === 0 ? (
+                <div style={listItem}>No strong acceleration detected</div>
               ) : (
-                clusters
-                  .filter((c) => (c.divergenceScore ?? 0) >= 35)
-                  .sort(
-                    (a, b) =>
-                      (b.divergenceScore ?? 0) - (a.divergenceScore ?? 0),
-                  )
-                  .slice(0, 5)
-                  .map((c) => (
-                    <div key={c.slug} style={listItem}>
-                      <strong>{c.title}</strong>
-                      <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
-                        Divergence:{" "}
-                        <strong>{c.divergenceScore ?? 0}/100</strong> • Sources:{" "}
-                        {c.sourceCount ?? c.sources ?? "--"}
-                      </div>
-                    </div>
-                  ))
+                acceleratingClusters.map((c) => (
+                  <div key={c.slug} style={listItem}>
+                    • {c.title}
+                  </div>
+                ))
               )}
             </div>
           </div>

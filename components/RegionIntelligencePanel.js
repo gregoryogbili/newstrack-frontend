@@ -124,24 +124,30 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
     <div
       style={{
         position: "fixed",
-        top: 0,
-        right: 0,
-        height: "100vh",
-        width: "360px",
-        maxWidth: "85vw",
+        top: "110px",
+        height: "auto",
+        maxHeight: "75vh",
+        borderRadius: "8px",
+        left: 0,
+        width: "28vw",
+        maxWidth: "340px",
+        minWidth: "280px",
+        borderLeft: "1px solid rgba(255,255,255,0.06)",
         background: "#0b1220",
-        boxShadow: "-10px 0 40px rgba(0,0,0,0.6)",
-        transform: open ? "translateX(0)" : "translateX(100%)",
-        transition: "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
+        boxShadow: "0 12px 35px rgba(0,0,0,0.28)",
+        transform: open ? "translateX(0)" : "translateX(-100%)",
+        transition: "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease",
+        opacity: open ? 1 : 0,
+        pointerEvents: open ? "auto" : "none",
         zIndex: 9999,
-        padding: "30px",
+        padding: "16px",
         overflowY: "auto",
         color: "#e6edf3",
       }}
     >
       {/* Close Button */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2 style={{ fontSize: 18 }}>
+        <h2 style={{ fontSize: 16, lineHeight: 1.4 }}>
           {regionData.region} — Regional Intelligence Brief
         </h2>
         <button
@@ -159,7 +165,8 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
       </div>
 
       <div style={{ marginTop: 20 }}>
-        <h4>Signal Interpretation</h4>
+        <h4 style={{ fontSize: 13, marginTop: 18, marginBottom: 6 }}>
+          Signal Interpretation</h4>
 
         <p>
           Narrative Structure: <strong>{narrativeStructure}</strong>
@@ -175,15 +182,17 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
         </p>
       </div>
 
-      <div style={{ marginTop: 25 }}>
-        <h4>Cluster Statistics (24h)</h4>
-        <div style={{ marginTop: 25 }}>
-          <h4>Regional Intelligence Interpretation</h4>
+      <div style={{ marginTop: 18 }}>
+        <h4 style={{ fontSize: 13, marginTop: 18, marginBottom: 6 }}>
+          Cluster Statistics (24h)</h4>
+        <div style={{ marginTop: 18 }}>
+          <h4 style={{ fontSize: 13, marginTop: 18, marginBottom: 6 }}>
+            Regional Intelligence Interpretation</h4>
 
           <div
             style={{
               fontSize: 14,
-              lineHeight: 1.6,
+              lineHeight: 1.4,
               opacity: 0.9,
             }}
           >
@@ -196,13 +205,14 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
         <p>Average Source Diversity: {regionData.averageSourceDiversity}</p>
       </div>
 
-      <div style={{ marginTop: 25 }}>
-        <h4>What This Means</h4>
+      <div style={{ marginTop: 18 }}>
+        <h4 style={{ fontSize: 13, marginTop: 18, marginBottom: 6 }}>
+          What This Means</h4>
 
         <div
           style={{
             fontSize: 14,
-            lineHeight: 1.6,
+            lineHeight: 1.4,
             opacity: 0.9,
           }}
         >
@@ -211,7 +221,8 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
       </div>
 
       <div style={{ marginTop: 30 }}>
-        <h4>24-Hour Narrative Trend</h4>
+        <h4 style={{ fontSize: 13, marginTop: 18, marginBottom: 6 }}>
+          24-Hour Narrative Trend</h4>
 
         <MiniTrendGraph data={trendData} />
 
@@ -227,8 +238,8 @@ export default function RegionIntelligencePanel({ regionData, open, onClose }) {
 function MiniTrendGraph({ data }) {
   const safe = Array.isArray(data) ? data : [];
   const max = Math.max(1, ...safe.map((d) => d.count || 0));
-  const width = 350;
-  const height = 120;
+  const width = 280;
+  const height = 90;
 
   const points = safe.map((d, i) => {
     const x = (i / 23) * width;
@@ -247,4 +258,3 @@ function MiniTrendGraph({ data }) {
     </svg>
   );
 }
-
