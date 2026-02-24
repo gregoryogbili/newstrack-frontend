@@ -56,67 +56,6 @@ export default function TopNav({
               </Link>
             );
           })}
-          <style jsx>{`
-            nav a:hover {
-              background: #111;
-              color: #fff !important;
-              border-color: #111 !important;
-            }
-
-            /* Mobile layout */
-            @media (max-width: 768px) {
-              .topnav-inner {
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                  "brand"
-                  "right"
-                  "nav";
-                row-gap: 8px;
-                padding: 12px;
-              }
-
-              .topnav-brand {
-                grid-area: brand;
-                justify-content: center;
-              }
-
-              .topnav-right {
-                grid-area: right;
-                justify-content: center;
-              }
-
-              .topnav-nav {
-                grid-area: nav;
-                width: 100%;
-                justify-content: flex-start; /* important */
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding: 0 8px;
-              }
-
-              .topnav-nav::-webkit-scrollbar {
-                display: none;
-              }
-
-              .topnav-nav a {
-                min-width: auto; /* remove forced width */
-                width: auto;
-                height: 32px;
-                padding: 0 12px;
-                font-size: 13px;
-              }
-
-              .topnav-brand span:last-child {
-                font-size: 20px;
-              }
-
-              .topnav-right a {
-                height: 32px;
-                padding: 0 12px;
-                font-size: 13px;
-              }
-            }
-          `}</style>
         </nav>
 
         {/* Right: login + optional slot */}
@@ -127,6 +66,67 @@ export default function TopNav({
             Login
           </Link>
         </div>
+
+        <style jsx>{`
+          .topnav-inner a:not(.topnav-brand):hover {
+            background: #111;
+            color: #fff !important;
+            border-color: #111 !important;
+          }
+
+          /* Mobile layout */
+          @media (max-width: 768px) {
+            .topnav-inner {
+              grid-template-columns: 1fr auto !important;
+              grid-template-areas:
+                "brand right"
+                "nav nav" !important;
+              row-gap: 8px;
+              padding: 12px !important;
+            }
+
+            .topnav-brand {
+              grid-area: brand;
+              justify-content: flex-start;
+            }
+
+            .topnav-right {
+              grid-area: right;
+              justify-content: flex-end;
+            }
+
+            .topnav-nav {
+              grid-area: nav;
+              width: 100%;
+              justify-content: flex-start;
+              flex-wrap: nowrap;
+              overflow-x: auto;
+              padding: 0 4px;
+            }
+
+            .topnav-nav::-webkit-scrollbar {
+              display: none;
+            }
+
+            .topnav-nav a {
+              min-width: auto;
+              width: auto;
+              height: 32px;
+              padding: 0 12px;
+              font-size: 13px;
+            }
+
+            .topnav-brand span:last-child {
+              font-size: 20px;
+            }
+
+            .topnav-right a {
+              height: 32px;
+              padding: 0 12px;
+              font-size: 13px;
+            }
+          }
+        `}</style>
       </div>
     </header>
   );
@@ -150,6 +150,8 @@ const inner = {
   padding: "18px 18px 10px",
   boxSizing: "border-box",
   display: "grid",
+  gridTemplateColumns: "auto 1fr auto", // logo | nav | login
+  gridTemplateAreas: '"brand nav right"',
   alignItems: "center",
   gap: 14,
 };
@@ -161,6 +163,7 @@ const brand = {
   textDecoration: "none",
   color: "#111",
   justifySelf: "start",
+  gridArea: "brand",
 };
 
 const logoBox = {
@@ -197,6 +200,8 @@ const nav = {
   display: "flex",
   gap: 8,
   alignItems: "center",
+  justifyContent: "center",
+  gridArea: "nav",
 };
 
 const navBtn = {
@@ -204,7 +209,7 @@ const navBtn = {
   alignItems: "center",
   justifyContent: "center",
   height: 36,
-  minWidth: 120,
+  width: 130,
   padding: "0 18px",
   borderRadius: 8,
   border: "1px solid #d9d9d9",
@@ -214,6 +219,7 @@ const navBtn = {
   fontWeight: 800,
   fontSize: 14,
   transition: "all 0.2s ease",
+  boxSizing: "border-box",
 };
 
 const navBtnActive = {
@@ -236,6 +242,7 @@ const right = {
   display: "inline-flex",
   alignItems: "center",
   gap: 10,
+  gridArea: "right",
 };
 
 const loginBtn = {

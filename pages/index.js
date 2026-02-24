@@ -346,7 +346,7 @@ const card = {
   borderRadius: 8,
   padding: 14,
   background: "#f5f5f5",
-  minHeight: 210,
+  minHeight: 160,
   height: "100%",
   display: "flex",
   flexDirection: "column",
