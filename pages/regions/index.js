@@ -52,10 +52,6 @@ function RegionBlock({ regionData }) {
     (a, b) => (b.signalStrength || 0) - (a.signalStrength || 0),
   );
 
-  const sortedClusters = [...clusters].sort(
-    (a, b) => (b.signalStrength || 0) - (a.signalStrength || 0),
-  );
-
   // Top intelligence clusters (first few)
   const topClusters = sortedClusters.slice(0, 3);
 
@@ -92,7 +88,7 @@ function RegionBlock({ regionData }) {
 
       <div style={regionMeta}>
         Momentum: {momentum} · Narrative Structure: {narrativeStructure} ·
-        {clusters.length} Active Clusters · {allArticles.length} Articles
+        {clusters.length} Active Clusters · {fullArticles.length} Articles
       </div>
 
       <div className="newsGrid">
