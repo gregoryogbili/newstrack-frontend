@@ -87,9 +87,16 @@ export default function TopNav({
 
               .topnav-nav {
                 grid-area: nav;
-                justify-content: center;
-                flex-wrap: nowrap; /* prevent wrapping */
-                overflow-x: auto; /* allow scroll if needed */
+                justify-self: stretch;
+                width: 100%;
+                justify-content: flex-start; /* important */
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 0 8px;
+              }
+
+              .topnav-nav::-webkit-scrollbar {
+                display: none;
               }
 
               .topnav-nav a {
@@ -134,7 +141,7 @@ const wrap = {
   marginBottom: 18,
   overflowX: "hidden",
   position: "relative",
-  zIndex: 1
+  zIndex: 1,
 };
 
 const inner = {
