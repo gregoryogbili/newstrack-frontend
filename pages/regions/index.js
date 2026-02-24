@@ -65,15 +65,14 @@ function RegionBlock({ regionData }) {
     ...remainingClusters.flatMap((c) => c.articles.slice(0, 2)),
   ];
 
-  const fullArticles = [
-    ...topClusters.flatMap((c) => c.articles),
-    ...remainingClusters.flatMap((c) => c.articles),
-  ];
+  const fullArticles = sortedClusters
+    .flatMap((c) => c.articles)
+    .sort((a, b) => (b.score || 0) - (a.score || 0));
 
   let visible;
 
   if (stage === 1) {
-    visible = stageOneArticles.slice(0, 4);
+    visible = fullArticles.slice(0, 4);
   } else if (stage === 2) {
     visible = stageTwoArticles.slice(0, 12);
   } else {
@@ -81,7 +80,7 @@ function RegionBlock({ regionData }) {
   }
 
   return (
-    <div style={{ marginBottom: 60 }}>
+    <div style={{ marginBottom: 40 }}>
       <h2 style={sectionTitle}>{region}</h2>
 
       <div style={regionSub}>Dominant Regional Signals</div>
@@ -93,26 +92,49 @@ function RegionBlock({ regionData }) {
 
       <div className="newsGrid">
         {visible.map((item, index) => (
-          <div key={item.id}>
-            {stage > 1 && index === 4 && (
-              <div style={clusterDivider}>Secondary Clusters</div>
-            )}
-            <ArticleCard item={item} />
-          </div>
+          <ArticleCard key={item.id} item={item} />
         ))}
+
+        <style jsx global>{`
+          .newsGrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 30px;
+            align-items: stretch;
+          }
+
+          @media (max-width: 1000px) {
+            .newsGrid {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+
+          @media (max-width: 650px) {
+            .newsGrid {
+              grid-template-columns: 1fr;
+              gap: 16px;
+            }
+          }
+        `}</style>
       </div>
 
-      {stage < 3 && (
-        <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: "center", marginTop: 20, marginBottom: 20 }}>
+        {stage < 3 && (
           <button style={expandBtn} onClick={() => setStage(stage + 1)}>
-            {stage === 1
-              ? "Expand Signal Field"
-              : stage === 2
-                ? "View Full Regional Dump"
-                : null}
+            {stage === 1 ? "Expand Signal Field" : "View Full Regional Dump"}
           </button>
-        </div>
-      )}
+        )}
+
+        {stage > 1 && (
+          <button
+            style={{ ...expandBtn, marginLeft: 10 }}
+            onClick={() => setStage(1)}
+          >
+            Collapse
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -174,7 +196,7 @@ const sectionTitle = {
 const regionMeta = {
   fontSize: 11,
   opacity: 0.6,
-  marginBottom: 18,
+  marginBottom: 22,
 };
 
 const regionSub = {
@@ -199,15 +221,15 @@ const card = {
   borderRadius: 8,
   padding: 14,
   background: "#f5f5f5",
-  minHeight: 190,
-  height: "100%",
+  minHeight: 240,
   display: "flex",
   flexDirection: "column",
+  justifyContent: "space-between",
 };
 
 const cardTitle = {
   fontFamily: "'Playfair Display', serif",
-  fontSize: 20,
+  fontSize: 18,
   fontWeight: 700,
   marginBottom: 8,
 };
