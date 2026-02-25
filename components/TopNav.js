@@ -98,6 +98,7 @@ export default function TopNav({
             .topnav-nav {
               grid-area: nav;
               width: 100%;
+              box-sizing: border-box; 
               justify-content: flex-start;
               flex-wrap: nowrap;
               overflow-x: auto;
