@@ -3,10 +3,11 @@ import Link from "next/link";
 export default function JournalistCallout() {
   return (
     <section style={wrap}>
-      <h2 style={title}>Are You a Journalist?</h2>
+      <h2 style={title}>Are You an Independent Journalist?</h2>
       <p style={copy}>
-        Publish your stories on Newstrac and earn shared advert revenue.<br />
-        No editorial bias. Just AI-ranked visibility.
+        Publish verified stories on NewsTrac.
+        <br />
+        Earn revenue. No editorial gatekeeping. AI-ranked visibility.
       </p>
 
       <Link href="/login" style={btn}>
@@ -21,8 +22,10 @@ const wrap = {
   marginBottom: 40,
   borderRadius: 16,
   padding: "40px 20px",
-  background: "#f3f3f3",
-  textAlign: "center"
+  background: "linear-gradient(135deg, #10151d, #0d1117)",
+  border: "1px solid rgba(0,200,255,0.25)",
+  textAlign: "center",
+  color: "#fff"
 };
 
 const title = {
@@ -34,16 +37,15 @@ const title = {
 const copy = {
   marginTop: 12,
   marginBottom: 18,
-  color: "#333",
-  fontWeight: 600,
+  opacity: 0.85,
   lineHeight: 1.7
 };
 
 const btn = {
   display: "inline-block",
   textDecoration: "none",
-  background: "#111",
-  color: "#fff",
+  background: "rgba(0,200,255,0.9)",
+  color: "#000",
   fontWeight: 900,
   padding: "12px 18px",
   borderRadius: 12

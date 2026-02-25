@@ -10,7 +10,7 @@ import SiteFooter from "../components/SiteFooter";
 import he from "he";
 import TopNav from "../components/TopNav";
 
-const API = process.env.NEXT_PUBLIC_API;
+const API = process.env.NEXT_PUBLIC_API_BASE;
 
 export default function Home() {
   const [feed, setFeed] = useState([]);

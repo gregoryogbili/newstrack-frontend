@@ -101,7 +101,7 @@ export default function TopNav({
               justify-content: flex-start;
               flex-wrap: nowrap;
               overflow-x: auto;
-              padding: 0 4px;
+              padding: 0 12px;
             }
 
             .topnav-nav::-webkit-scrollbar {
