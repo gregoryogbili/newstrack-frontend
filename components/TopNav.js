@@ -98,7 +98,7 @@ export default function TopNav({
             .topnav-nav {
               grid-area: nav;
               width: 100%;
-              box-sizing: border-box; 
+              box-sizing: border-box;
               justify-content: flex-start;
               flex-wrap: nowrap;
               overflow-x: auto;
@@ -139,7 +139,6 @@ const wrap = {
   width: "100%",
   background: "#fff",
   marginBottom: 18,
-  overflowX: "hidden",
   position: "relative",
   zIndex: 1,
 };
