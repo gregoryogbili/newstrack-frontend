@@ -12,7 +12,7 @@ export default function ClusterDetail() {
   useEffect(() => {
     if (!slug) return;
 
-    fetch(`http://localhost:3001/clusters/${slug}`)
+    fetch(`${process.env.NEXT_PUBLIC_API}/clusters/${slug}`)
       .then((res) => res.json())
       .then((data) => setCluster(data))
       .catch((err) => console.error("Cluster fetch failed:", err));

@@ -11,6 +11,9 @@ const API = process.env.NEXT_PUBLIC_API;
 export default function SignalsDashboard() {
   const [clusters, setClusters] = useState([]);
   const [overview, setOverview] = useState(null);
+  const [windowParam, setWindowParam] = useState("6h");
+
+  const [tooltip, setTooltip] = useState(null);
 
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -23,7 +26,6 @@ export default function SignalsDashboard() {
     : [];
 
   useEffect(() => {
-    // Fetch clusters
     fetch(`${API}/clusters`)
       .then((res) => res.json())
       .then((data) => {
@@ -35,13 +37,14 @@ export default function SignalsDashboard() {
         }
       })
       .catch((err) => console.error("Cluster fetch failed:", err));
+  }, []);
 
-    // Fetch macro overview
-    fetch(`${API}/signals/overview`)
+  useEffect(() => {
+    fetch(`${API}/signals/overview?window=${windowParam}`)
       .then((res) => res.json())
       .then((data) => setOverview(data))
       .catch((err) => console.error("Overview fetch failed:", err));
-  }, []);
+  }, [windowParam]);
 
   const getTrendDisplay = (trend) => {
     switch (trend) {
@@ -76,6 +79,34 @@ export default function SignalsDashboard() {
       />
 
       <div style={page} className="pageTight">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: 12,
+            gap: 8,
+          }}
+        >
+          {["6h", "24h", "72h"].map((w) => (
+            <button
+              key={w}
+              onClick={() => setWindowParam(w)}
+              style={{
+                padding: "6px 12px",
+                borderRadius: 6,
+                border:
+                  windowParam === w ? "1px solid #60a5fa" : "1px solid #334155",
+                background: windowParam === w ? "#1e293b" : "#0f172a",
+                color: "#e6edf3",
+                fontSize: 12,
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+            >
+              {w.toUpperCase()}
+            </button>
+          ))}
+        </div>
         {overview?.narrativeSummary && (
           <div
             style={{
@@ -112,18 +143,60 @@ export default function SignalsDashboard() {
           {/* ===== ACCELERATION BAND ===== */}
           <div style={rowBand} className="rowBand">
             <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>Signal Velocity Index</div>
+              <div
+                style={{ ...panelTitle, cursor: "help" }}
+                onMouseEnter={() =>
+                  setTooltip(
+                    "Measures acceleration in narrative volume relative to baseline clusters.",
+                  )
+                }
+                onMouseLeave={() => setTooltip(null)}
+              >
+                Signal Velocity Index ⓘ
+              </div>
               <div style={metric}>
                 {overview ? overview.velocityIndex : "--"}
               </div>
               <div style={metricLabel}>Change in global narrative activity</div>
               <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
-                (0–100 scale, 6h window)
+                (0–100 scale, {windowParam} window)
               </div>
             </div>
 
             <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>Economic Risk Pulse</div>
+              <div
+                style={{ ...panelTitle, cursor: "help" }}
+                onMouseEnter={() =>
+                  setTooltip(
+                    "Blended pressure score combining volume, acceleration density, and geographic dispersion.",
+                  )
+                }
+                onMouseLeave={() => setTooltip(null)}
+              >
+                Narrative Pressure Index ⓘ
+              </div>
+
+              <div style={metric}>{overview ? overview.npi : "--"}</div>
+
+              <div style={metricLabel}>Structural narrative pressure</div>
+
+              <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
+                (0–100 scale, {windowParam} window)
+              </div>
+            </div>
+
+            <div style={{ ...panel, gridColumn: "span 3" }}>
+              <div
+                style={{ ...panelTitle, cursor: "help" }}
+                onMouseEnter={() =>
+                  setTooltip(
+                    "Composite risk derived from velocity, acceleration density, and cluster instability.",
+                  )
+                }
+                onMouseLeave={() => setTooltip(null)}
+              >
+                Economic Risk Pulse ⓘ
+              </div>
               {!overview ? (
                 <div style={metric}>--</div>
               ) : (
@@ -153,27 +226,8 @@ export default function SignalsDashboard() {
               )}
               <div style={metricLabel}>Market & Macro Risk</div>
               <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
-                (0–100 scale, 6h window)
+                (0–100 scale, {windowParam} window)
               </div>
-            </div>
-
-            <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>Regional Signal Spread</div>
-              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
-                Hot Regions
-              </div>
-              {!overview || !overview.regionalSpread ? (
-                <div style={listItem}>Loading regional spread...</div>
-              ) : overview.regionalSpread.length === 0 ? (
-                <div style={listItem}>No region signals detected</div>
-              ) : (
-                overview.regionalSpread.map((r) => (
-                  <div key={r.region} style={listItem}>
-                    • {r.region}{" "}
-                    <span style={{ opacity: 0.65 }}>({r.count})</span>
-                  </div>
-                ))
-              )}
             </div>
 
             <div style={{ ...panel, gridColumn: "span 3" }}>
@@ -210,7 +264,17 @@ export default function SignalsDashboard() {
           {/* ===== PRESSURE BAND ===== */}
           <div style={rowBand} className="rowBand">
             <div style={{ ...panel, gridColumn: "span 6" }}>
-              <div style={panelTitle}>Geopolitical Pressure Index</div>
+              <div
+                style={{ ...panelTitle, cursor: "help" }}
+                onMouseEnter={() =>
+                  setTooltip(
+                    "Region-weighted narrative intensity adjusted for acceleration and divergence.",
+                  )
+                }
+                onMouseLeave={() => setTooltip(null)}
+              >
+                Geopolitical Pressure Index ⓘ
+              </div>
 
               {!overview?.geopoliticalPressure ? (
                 <div style={listItem}>Loading pressure index...</div>
@@ -263,6 +327,110 @@ export default function SignalsDashboard() {
                 ))
               )}
             </div>
+
+            <div style={{ ...panel, gridColumn: "span 6" }}>
+              <div style={panelTitle}>Regional Volume Spread</div>
+
+              {!overview?.regionalSpread ? (
+                <div style={listItem}>Loading regional spread...</div>
+              ) : (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 20,
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{ fontSize: 12, opacity: 0.6, marginBottom: 8 }}
+                    >
+                      Top 10 by Volume
+                    </div>
+                    {overview.regionalSpread.slice(0, 10).map((r) => (
+                      <div key={r.region} style={listItem}>
+                        • {r.region}{" "}
+                        <span style={{ opacity: 0.65 }}>({r.count})</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div>
+                    <div
+                      style={{ fontSize: 12, opacity: 0.6, marginBottom: 8 }}
+                    >
+                      Top 10 by Acceleration
+                    </div>
+                    {overview.geopoliticalPressure?.slice(0, 10).map((r) => (
+                      <div key={r.region} style={listItem}>
+                        • {r.region}{" "}
+                        <span style={{ opacity: 0.65 }}>
+                          ({r.narrativePressure})
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div style={rowBand}>
+            {/* LEFT PANEL — GEOSTRATEGIC */}
+            <div style={{ ...panel, gridColumn: "span 6" }}>
+              <div style={panelTitle}>
+                Geostrategic Narrative Intensity Ranking
+              </div>
+
+              {!overview?.strategicIntensityRanking ? (
+                <div style={listItem}>Loading strategic intensity...</div>
+              ) : (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 12,
+                    fontSize: 13,
+                  }}
+                >
+                  {overview.strategicIntensityRanking.map((c, i) => {
+                    const maxScore =
+                      overview.strategicIntensityRanking[0]?.score || 1;
+                    const widthPercent = (c.score / maxScore) * 100;
+
+                    return (
+                      <div key={c.country} style={{ padding: "6px 0" }}>
+                        <div style={{ fontWeight: 600 }}>
+                          {i + 1}. {c.country}
+                        </div>
+                        <div
+                          style={{
+                            height: 6,
+                            background: "#1f2937",
+                            borderRadius: 4,
+                            marginTop: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${widthPercent}%`,
+                              height: "100%",
+                              background: "#ef4444",
+                            }}
+                          />
+                        </div>
+                        <div style={{ fontSize: 11, opacity: 0.6 }}>
+                          Score: {c.score}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT PANEL — REGIONAL VOLUME SPREAD */}
 
             <div style={{ ...panel, gridColumn: "span 6" }}>
               <div style={panelTitle}>Top Accelerating Topics</div>
@@ -352,6 +520,27 @@ export default function SignalsDashboard() {
           </div>
         </div>
       </div>
+
+      {tooltip && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 20,
+            left: 20,
+            background: "#111827",
+            padding: "10px 14px",
+            borderRadius: 6,
+            fontSize: 12,
+            color: "#e5e7eb",
+            border: "1px solid #334155",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.4)",
+            maxWidth: 300,
+            zIndex: 99999,
+          }}
+        >
+          {tooltip}
+        </div>
+      )}
 
       <style jsx>{`
         .cluster-card:hover {

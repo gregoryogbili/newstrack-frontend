@@ -16,12 +16,25 @@ export default function GlobalHeatMap({ data = [] }) {
         container: mapContainer.current,
         style:
           "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-        center: [20, 30],
-        zoom: 1.4,
+        center: [0, 15],
+        zoom: 1.15,
       });
     }
 
     const map = mapRef.current;
+
+    // 🔒 Lock all movement
+    map.scrollZoom.disable();
+    map.boxZoom.disable();
+    map.dragRotate.disable();
+    map.dragPan.disable();
+    map.keyboard.disable();
+    map.doubleClickZoom.disable();
+    map.touchZoomRotate.disable();
+
+    // 🔒 Lock zoom level
+    map.setMinZoom(1.15);
+    map.setMaxZoom(1.15);
 
     // 2) Inject pulse keyframes once
     if (!document.getElementById("map-pulse-style")) {
@@ -55,14 +68,19 @@ export default function GlobalHeatMap({ data = [] }) {
 
         const count = region.count || 0;
 
+        const jitter = 0.8;
+
+        const lat = region.lat + (Math.random() - 0.5) * jitter;
+        const lng = region.lng + (Math.random() - 0.5) * jitter;
+
         // Subtle scaling (cap size)
-        const size = Math.min(26, Math.max(8, count * 0.35));
+        const size = Math.min(22, Math.max(6, count * 0.28));
 
         // Pressure color scale
         let color = "rgba(80,180,255,0.9)"; // default cool blue
 
-        if (count > 70)
-          color = "rgba(255,0,0,0.95)"; // true hot red
+        if (count > 120) color = "rgba(255,0,0,0.95)";
+        else if (count > 80) color = "rgba(255,90,90,0.9)";
         else if (count > 40)
           color = "rgba(255,170,60,0.9)"; // elevated (orange)
         else if (count > 20) color = "rgba(255,230,90,0.9)"; // moderate (yellow)
@@ -99,7 +117,7 @@ export default function GlobalHeatMap({ data = [] }) {
         container.appendChild(dot);
 
         const marker = new maplibregl.Marker({ element: container })
-          .setLngLat([region.lng, region.lat])
+          .setLngLat([lng, lat])
           .addTo(map);
 
         markersRef.current.push(marker);
