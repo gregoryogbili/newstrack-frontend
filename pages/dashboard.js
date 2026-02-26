@@ -315,22 +315,32 @@ export default function Dashboard() {
           </section>
         )}
 
-        <div style={{ lineHeight: 1.9 }}>
-          <div>
-            <strong>Total Views:</strong> {metrics.total_views}
-          </div>
-          <div>
-            <strong>RPM:</strong> £{metrics.rpm_gbp} per 1,000 views
-          </div>
-          <div>
-            <strong>Estimated Earnings:</strong> £
-            {Number(metrics.estimated_earnings_gbp).toFixed(2)}
-          </div>
+        {tab === "revenue" && (
+          <section style={panel}>
+            <h2 style={{ ...h2, color: "#b80000" }}>Revenue</h2>
 
-          <div style={{ marginTop: 10, fontSize: 13, opacity: 0.75 }}>
-            Formula: (views ÷ 1000) × RPM
-          </div>
-        </div>
+            {!metrics ? (
+              <div style={{ opacity: 0.75 }}>Loading metrics...</div>
+            ) : (
+              <div style={{ lineHeight: 1.9 }}>
+                <div>
+                  <strong>Total Views:</strong> {metrics.total_views}
+                </div>
+                <div>
+                  <strong>RPM:</strong> £{metrics.rpm_gbp} per 1,000 views
+                </div>
+                <div>
+                  <strong>Estimated Earnings:</strong> £
+                  {Number(metrics.estimated_earnings_gbp).toFixed(2)}
+                </div>
+
+                <div style={{ marginTop: 10, fontSize: 13, opacity: 0.75 }}>
+                  Formula: (views ÷ 1000) × RPM
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         {tab === "tools" && (
           <section style={panel}>
