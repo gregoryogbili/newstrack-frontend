@@ -2,7 +2,7 @@ import { useState } from "react";
 import TopNav from "../components/TopNav";
 import Image from "next/image";
 
-const API = process.env.NEXT_PUBLIC_API_BASE;
+const API = process.env.NEXT_PUBLIC_API;
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false);

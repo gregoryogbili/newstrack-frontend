@@ -2,7 +2,7 @@ import TopNav from "../components/TopNav";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
-const API = process.env.NEXT_PUBLIC_API_BASE;
+const API = process.env.NEXT_PUBLIC_API;
 
 function money(n) {
   if (n === null || n === undefined || Number.isNaN(Number(n))) return "—";
@@ -23,8 +23,7 @@ export default function Dashboard() {
   const [journalistId, setJournalistId] = useState("");
   const [journalistPosts, setJournalistPosts] = useState([]);
 
-  const [totalRevenue, setTotalRevenue] = useState("1000");
-  const [revenueResult, setRevenueResult] = useState(null);
+  const [metrics, setMetrics] = useState(null);
 
   const [tab, setTab] = useState("overview"); // swissknife tabs
   const [error, setError] = useState("");
@@ -32,8 +31,6 @@ export default function Dashboard() {
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");
   const [postMessage, setPostMessage] = useState("");
-
-  const canCallApi = useMemo(() => !!API, []);
 
   async function submitPost() {
     if (!headline || !content) {
@@ -69,6 +66,19 @@ export default function Dashboard() {
     }
   }
 
+  async function loadMetrics() {
+    if (!journalistId) return;
+
+    const data = await safeFetchJson(
+      `${API}/journalists/${journalistId}/metrics`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+
+    setMetrics(data);
+  }
+
   // responsive
   useEffect(() => {
     function onResize() {
@@ -81,14 +91,18 @@ export default function Dashboard() {
 
   // protect route
   useEffect(() => {
+    if (!router.isReady) return;
+
     const savedToken = localStorage.getItem("newstrack_token");
+
     if (!savedToken) {
-      router.push("/login");
+      router.replace("/login");
       return;
     }
+
     setToken(savedToken);
     fetchMe(savedToken);
-  }, []);
+  }, [router.isReady]);
 
   async function fetchMe(jwtToken) {
     try {
@@ -139,30 +153,43 @@ export default function Dashboard() {
 
   async function loadJournalistPosts() {
     if (!journalistId) return;
-    const data = await safeFetchJson(
-      `${API}/journalists/${journalistId}/posts`,
-    );
-    setJournalistPosts(data);
+    try {
+      const data = await safeFetchJson(
+        `${API}/journalists/${journalistId}/posts`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setJournalistPosts(data);
+    } catch {
+      setJournalistPosts([]);
+    }
   }
 
-  async function runRevenueSim() {
-    const total = Number(totalRevenue);
-    if (!total || total <= 0) {
-      setError("Enter a valid revenue amount (e.g. 1000).");
-      return;
-    }
+  async function loadMetrics() {
+    if (!journalistId) return;
+
     const data = await safeFetchJson(
-      `${API}/revenue/simulate?total=${encodeURIComponent(total)}`,
+      `${API}/journalists/${journalistId}/metrics`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     );
-    setRevenueResult(data);
+
+    setMetrics(data);
   }
 
   useEffect(() => {
-    if (!canCallApi) return;
+    if (!API) return;
     if (!journalistId) return;
+
     loadJournalistPosts();
-    runRevenueSim();
-  }, [canCallApi, journalistId]);
+    loadMetrics();
+  }, [journalistId]);
 
   return (
     <>
@@ -214,21 +241,38 @@ export default function Dashboard() {
         {tab === "overview" && (
           <div style={grid(isMobile)}>
             <section style={panel}>
-              <h2 style={h2}>Quick Status</h2>
-              <div style={{ opacity: 0.8, lineHeight: 1.7 }}>
-                <div>Role: Journalist</div>
-                <div>Posts: {journalistPosts.length}</div>
-                <div>
-                  Revenue (sim):{" "}
-                  <strong>
-                    {revenueResult ? money(revenueResult.total_revenue) : "—"}
-                  </strong>
+              <h2 style={{ ...h2, color: "#b80000" }}>Quick Status</h2>
+
+              {!currentUser ? (
+                <div style={{ opacity: 0.7 }}>Loading profile...</div>
+              ) : (
+                <div style={{ opacity: 0.85, lineHeight: 1.7 }}>
+                  <div>Role: Journalist</div>
+                  <div>
+                    Total Posts:{" "}
+                    <strong>{metrics ? metrics.total_posts : "..."}</strong>
+                  </div>
+                  <div>
+                    Total Views:{" "}
+                    <strong>{metrics ? metrics.total_views : "..."}</strong>
+                  </div>
+                  <div>
+                    Estimated Earnings:{" "}
+                    <strong>
+                      {metrics
+                        ? `£${Number(metrics.estimated_earnings_gbp).toFixed(2)}`
+                        : "..."}
+                    </strong>
+                  </div>
+                  <div style={{ fontSize: 13, opacity: 0.75 }}>
+                    RPM: {metrics ? `£${metrics.rpm_gbp}/1,000 views` : "..."}
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
 
             <section style={panel}>
-              <h2 style={h2}>Next Actions</h2>
+              <h2 style={{ ...h2, color: "#b80000" }}>Next Actions</h2>
               <ul
                 style={{
                   margin: 0,
@@ -259,50 +303,70 @@ export default function Dashboard() {
             ) : (
               journalistPosts.map((p) => (
                 <div key={p.id} style={card}>
-                  <strong>{p.headline}</strong>
+                  <a
+                    href={`/posts/${p.id}`}
+                    style={{ color: "#111", textDecoration: "underline" }}
+                  >
+                    <strong>{p.headline}</strong>
+                  </a>
                 </div>
               ))
             )}
           </section>
         )}
 
-        {tab === "revenue" && (
-          <section style={panel}>
-            <h2 style={h2}>Revenue Simulation</h2>
+        <div style={{ lineHeight: 1.9 }}>
+          <div>
+            <strong>Total Views:</strong> {metrics.total_views}
+          </div>
+          <div>
+            <strong>RPM:</strong> £{metrics.rpm_gbp} per 1,000 views
+          </div>
+          <div>
+            <strong>Estimated Earnings:</strong> £
+            {Number(metrics.estimated_earnings_gbp).toFixed(2)}
+          </div>
 
-            <label style={label}>Total Revenue (GBP)</label>
-            <input
-              value={totalRevenue}
-              onChange={(e) => setTotalRevenue(e.target.value)}
-              style={input}
-            />
-
-            <button onClick={runRevenueSim} style={btn}>
-              Simulate
-            </button>
-
-            {revenueResult && (
-              <div style={{ marginTop: 12, opacity: 0.85, lineHeight: 1.8 }}>
-                <div>
-                  Total Revenue:{" "}
-                  <strong>{money(revenueResult.total_revenue)}</strong>
-                </div>
-              </div>
-            )}
-          </section>
-        )}
+          <div style={{ marginTop: 10, fontSize: 13, opacity: 0.75 }}>
+            Formula: (views ÷ 1000) × RPM
+          </div>
+        </div>
 
         {tab === "tools" && (
           <section style={panel}>
-            <h2 style={h2}>Swissknife Tools (Next)</h2>
-            <div style={{ opacity: 0.8, lineHeight: 1.8 }}>
-              Coming next (we’ll build these in order):
-              <ol style={{ marginTop: 10 }}>
-                <li>Post composer (create journalist post)</li>
-                <li>Verification checklist (sources + evidence)</li>
-                <li>Live submission queue</li>
-                <li>Performance analytics (reads, time, revenue)</li>
-              </ol>
+            <h2 style={{ ...h2, color: "#b80000" }}>Tools</h2>
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <button
+                style={btnPrimary}
+                onClick={() => window.open("/tools/imageforge.html", "_blank")}
+              >
+                Open Image Resizer
+              </button>
+            </div>
+
+            <div style={{ marginTop: 16 }}>
+              <div style={{ fontSize: 13, opacity: 0.8, marginBottom: 10 }}>
+                Embedded tool (from <code>/public/tools/imageforge.html</code>)
+              </div>
+
+              <div
+                style={{
+                  border: "1px solid #ddd",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                }}
+              >
+                <iframe
+                  src="/tools/imageforge.html"
+                  title="Image Resizer"
+                  style={{
+                    width: "100%",
+                    height: "1300px",
+                    border: "0",
+                  }}
+                />
+              </div>
             </div>
           </section>
         )}
@@ -358,6 +422,8 @@ const page = {
   maxWidth: 1100,
   margin: "0 auto",
   fontFamily: "system-ui, Arial",
+  background: "#ffffff",
+  color: "#111",
 };
 
 const topRow = {
@@ -378,23 +444,24 @@ const tabs = {
 const tabBtn = {
   padding: "10px 14px",
   borderRadius: 999,
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(255,255,255,0.04)",
-  color: "#fff",
+  border: "1px solid #ddd",
+  background: "#ffffff",
+  color: "#111",
   cursor: "pointer",
 };
 
 const tabBtnActive = {
-  border: "1px solid rgba(0,200,255,0.55)",
-  background: "rgba(0,200,255,0.12)",
+  border: "1px solid #b80000",
+  background: "#ffeaea",
+  color: "#b80000",
 };
 
 const panel = {
-  border: "1px solid rgba(255,255,255,0.10)",
+  border: "1px solid #e5e5e5",
   borderRadius: 16,
   padding: 16,
-  background: "rgba(255,255,255,0.03)",
-  color: "#fff",
+  background: "#f7f7f7",
+  color: "#111",
 };
 
 const panelHeader = {
@@ -417,9 +484,9 @@ const label = {
 const input = {
   padding: 12,
   borderRadius: 12,
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(0,0,0,0.25)",
-  color: "#fff",
+  border: "1px solid #ccc",
+  background: "#ffffff",
+  color: "#111",
   width: "100%",
   outline: "none",
   marginBottom: 10,
@@ -456,9 +523,9 @@ const errorBox = {
   marginTop: 18,
   padding: 12,
   borderRadius: 12,
-  border: "1px solid rgba(255,107,107,0.35)",
-  background: "rgba(255,107,107,0.08)",
-  color: "#ffb3b3",
+  border: "1px solid #ffcccc",
+  background: "#ffeaea",
+  color: "#b80000",
 };
 
 const grid = (isMobile) => ({
