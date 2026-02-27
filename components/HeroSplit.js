@@ -94,7 +94,7 @@ function generateIntelLine(item) {
   if (/(cyber|hack|breach|data leak|ransomware)/.test(text))
     return "Cyber risk signal detected. Watch for attribution and systemic impact.";
   if (
-    /(ai|artificial intelligence|chip|semiconductor|software|platform)/.test(
+    /(artificial intelligence|ai model|ai system|semiconductor|microchip|chipmaker|cybersecurity|data breach|ransomware|hack)/.test(
       text,
     )
   )
@@ -504,7 +504,6 @@ export default function HeroSplit({ items = [], loading }) {
         >
           {/* background layers */}
           <div style={bgBase} />
-                   
 
           {/* text overlay */}
           <div style={{ ...rightText, ...(fade ? fadeOut : fadeIn) }}>
