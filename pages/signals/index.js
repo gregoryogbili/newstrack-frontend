@@ -134,7 +134,13 @@ export default function SignalsDashboard() {
             ) : (
               <div style={{ marginTop: 10 }}>
                 <div style={{ height: 420, marginTop: 10, width: "100%" }}>
-                  <GlobalHeatMap data={overview.regionalSpread} />
+                  <GlobalHeatMap
+                    data={
+                      overview.regionalSpread
+                        ?.sort((a, b) => b.count - a.count)
+                        ?.slice(0, 3) || []
+                    }
+                  />
                 </div>
               </div>
             )}

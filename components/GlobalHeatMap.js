@@ -68,22 +68,14 @@ export default function GlobalHeatMap({ data = [] }) {
 
         const count = region.count || 0;
 
-        const jitter = 0.8;
-
-        const lat = region.lat + (Math.random() - 0.5) * jitter;
-        const lng = region.lng + (Math.random() - 0.5) * jitter;
+        const lat = region.lat;
+        const lng = region.lng;
 
         // Subtle scaling (cap size)
         const size = Math.min(22, Math.max(6, count * 0.28));
 
         // Pressure color scale
-        let color = "rgba(80,180,255,0.9)"; // default cool blue
-
-        if (count > 120) color = "rgba(255,0,0,0.95)";
-        else if (count > 80) color = "rgba(255,90,90,0.9)";
-        else if (count > 40)
-          color = "rgba(255,170,60,0.9)"; // elevated (orange)
-        else if (count > 20) color = "rgba(255,230,90,0.9)"; // moderate (yellow)
+        const color = "rgba(220, 0, 0, 0.95)";
 
         // container
         const container = document.createElement("div");
@@ -125,11 +117,9 @@ export default function GlobalHeatMap({ data = [] }) {
     }
 
     // 3) Ensure markers render after map loads, and whenever data changes
-    if (map.loaded()) {
+    setTimeout(() => {
       addMarkers();
-    } else {
-      map.once("load", addMarkers);
-    }
+    }, 50);
 
     // 4) Cleanup when component unmounts
     return () => {

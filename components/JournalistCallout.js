@@ -11,7 +11,7 @@ export default function JournalistCallout() {
       </p>
 
       <Link href="/login" style={btn}>
-        Submit Your Story →
+        Submit Your Story
       </Link>
     </section>
   );
@@ -44,9 +44,11 @@ const copy = {
 const btn = {
   display: "inline-block",
   textDecoration: "none",
-  background: "rgba(0,200,255,0.9)",
-  color: "#000",
+  background: "#c40000",
+  color: "#ffffff",
   fontWeight: 900,
-  padding: "12px 18px",
-  borderRadius: 12
+  padding: "12px 20px",
+  borderRadius: 12,
+  border: "none",
+  cursor: "pointer"
 };

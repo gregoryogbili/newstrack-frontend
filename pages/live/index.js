@@ -43,9 +43,11 @@ export default function LivePage() {
 }
 
 const container = {
-  padding: "80px 8%",
-  background: "#0c0f14",
+  maxWidth: "1200px",
+  margin: "0 auto",
+  padding: "80px 20px",
   minHeight: "100vh",
+  background: "#0c0f14",
   color: "#fff",
 };
 
@@ -66,16 +68,17 @@ const callOutBox = {
   background: "linear-gradient(135deg, #10151d, #0d1117)",
   padding: "50px",
   borderRadius: "16px",
-  border: "1px solid rgba(0,200,255,0.25)",
+  border: "1px solid rgba(196,0,0,0.35)",
 };
 
 const applyButton = {
   marginTop: "25px",
   padding: "14px 28px",
-  background: "rgba(0,200,255,0.9)",
-  color: "#000",
+  background: "#c40000",
+  color: "#ffffff",
   border: "none",
   borderRadius: "8px",
   fontWeight: "600",
   cursor: "pointer",
+  textDecoration: "none",
 };
