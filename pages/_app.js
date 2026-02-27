@@ -15,6 +15,11 @@ export default function MyApp({ Component, pageProps }) {
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
+
+        <meta charSet="UTF-8" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="NewsTrac" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <style jsx global>{`

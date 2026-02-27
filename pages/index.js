@@ -85,12 +85,24 @@ export default function Home() {
   return (
     <div style={container}>
       <Head>
-        <title>NewsTrac | Real-Time Global News</title>
+        <title>
+          NewsTrac – Real-Time Global News, Geopolitics & Economic Risk
+          Intelligence
+        </title>
+
         <meta
           name="description"
-          content="Breaking global news powered by AI-ranked visibility. Politics, economy, technology and world updates in real time."
+          content="NewsTrac delivers real-time global news, geopolitical analysis, economic risk signals and AI-powered narrative intelligence across world regions."
         />
+
+        <meta
+          name="keywords"
+          content="global news, geopolitical risk, economic risk, breaking news, world politics, narrative intelligence, news analytics, AI news platform"
+        />
+
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="canonical" href="https://newstrac.org/" />
       </Head>
 
       <TopNav

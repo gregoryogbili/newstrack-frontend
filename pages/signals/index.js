@@ -68,7 +68,16 @@ export default function SignalsDashboard() {
   return (
     <>
       <Head>
-        <title>NewsTrac Analytics</title>
+        <title>
+          NewsTrac Analytics – Geopolitical Pressure & Economic Risk Dashboard
+        </title>
+
+        <meta
+          name="description"
+          content="Monitor global narrative pressure, geopolitical risk, acceleration trends and economic instability in real time using NewsTrac Analytics."
+        />
+
+        <link rel="canonical" href="https://newstrac.org/signals" />
       </Head>
 
       <TopNav
