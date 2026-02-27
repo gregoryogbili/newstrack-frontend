@@ -15,28 +15,46 @@ function getRegionLabel(item) {
   const text = `${h} ${s} ${src}`;
 
   if (
-    /(israel|gaza|palestin|iran|iraq|syria|lebanon|yemen|saudi|uae|qatar|jordan|kuwait|oman|bahrain|red sea)/.test(text)
-  ) return "Middle East";
+    /(israel|gaza|palestin|iran|iraq|syria|lebanon|yemen|saudi|uae|qatar|jordan|kuwait|oman|bahrain|red sea)/.test(
+      text,
+    )
+  )
+    return "Middle East";
 
   if (
-    /(ukraine|russia|moscow|kyiv|nato|eu\b|europe|uk\b|britain|london|france|germany|italy|spain|poland|sweden|norway|finland)/.test(text)
-  ) return "Europe";
+    /(ukraine|russia|moscow|kyiv|nato|eu\b|europe|uk\b|britain|london|france|germany|italy|spain|poland|sweden|norway|finland)/.test(
+      text,
+    )
+  )
+    return "Europe";
 
   if (
-    /(africa|nigeria|ghana|kenya|ethiopia|sudan|somalia|south africa|congo|uganda|tanzania|zimbabwe|sahel|mali|niger|burkina)/.test(text)
-  ) return "Africa";
+    /(africa|nigeria|ghana|kenya|ethiopia|sudan|somalia|south africa|congo|uganda|tanzania|zimbabwe|sahel|mali|niger|burkina)/.test(
+      text,
+    )
+  )
+    return "Africa";
 
   if (
-    /(united states|u\.s\.|usa|washington|new york|california|canada|toronto|ottawa|mexico|mexican)/.test(text)
-  ) return "North America";
+    /(united states|u\.s\.|usa|washington|new york|california|canada|toronto|ottawa|mexico|mexican)/.test(
+      text,
+    )
+  )
+    return "North America";
 
   if (
-    /(latin america|brazil|argentina|chile|colombia|peru|venezuela|ecuador|uruguay|paraguay|bolivia|haiti|cuba)/.test(text)
-  ) return "Latin America";
+    /(latin america|brazil|argentina|chile|colombia|peru|venezuela|ecuador|uruguay|paraguay|bolivia|haiti|cuba)/.test(
+      text,
+    )
+  )
+    return "Latin America";
 
   if (
-    /(china|beijing|taiwan|hong kong|japan|tokyo|korea|seoul|india|delhi|pakistan|islamabad|australia|sydney|new zealand|indonesia|philippines|vietnam|thailand)/.test(text)
-  ) return "Asia-Pacific";
+    /(china|beijing|taiwan|hong kong|japan|tokyo|korea|seoul|india|delhi|pakistan|islamabad|australia|sydney|new zealand|indonesia|philippines|vietnam|thailand)/.test(
+      text,
+    )
+  )
+    return "Asia-Pacific";
 
   return "Global";
 }
@@ -59,17 +77,33 @@ function generateIntelLine(item) {
     return "Security escalation signal detected. Monitor retaliation and containment response.";
   if (/(killed|dead|deaths|fatal|casualt)/.test(text))
     return "Impact escalation confirmed. Expect amplification across sources and policy response.";
-  if (/(election|vote|government|minister|parliament|senate|congress|policy|law|court|judge|protest)/.test(text))
+  if (
+    /(election|vote|government|minister|parliament|senate|congress|policy|law|court|judge|protest)/.test(
+      text,
+    )
+  )
     return "Institutional narrative forming. Watch for official decisions and secondary protests.";
   if (/(sanction|tariff|ban|embargo)/.test(text))
     return "Pressure mechanism detected. Likely economic and diplomatic spillover.";
-  if (/(market|stocks|bond|inflation|gdp|bank|interest rate|oil|gas|trade|currency|recession)/.test(text))
+  if (
+    /(market|stocks|bond|inflation|gdp|bank|interest rate|oil|gas|trade|currency|recession)/.test(
+      text,
+    )
+  )
     return "Macro narrative shift emerging. Potential volatility and cross-sector impact.";
   if (/(cyber|hack|breach|data leak|ransomware)/.test(text))
     return "Cyber risk signal detected. Watch for attribution and systemic impact.";
-  if (/(ai|artificial intelligence|chip|semiconductor|software|platform)/.test(text))
+  if (
+    /(ai|artificial intelligence|chip|semiconductor|software|platform)/.test(
+      text,
+    )
+  )
     return "Tech narrative strengthening. Monitor regulatory and security spillover.";
-  if (/(earthquake|storm|flood|wildfire|hurricane|typhoon|landslide|evacuation)/.test(text))
+  if (
+    /(earthquake|storm|flood|wildfire|hurricane|typhoon|landslide|evacuation)/.test(
+      text,
+    )
+  )
     return "Disruption signal detected. Monitor casualties, infrastructure impact, and response speed.";
 
   return "Regional narrative gaining traction. Monitoring for acceleration and convergence.";
@@ -80,24 +114,24 @@ function generateIntelLine(item) {
    Tuned to match the SVG viewBox 0 0 1000 500
 ------------------------------ */
 const REGION_GLOW = {
-  "North America":  { x: "22%",  y: "30%" },
-  "Latin America":  { x: "28%",  y: "65%" },
-  "Europe":         { x: "50%",  y: "25%" },
-  "Africa":         { x: "50%",  y: "58%" },
-  "Middle East":    { x: "58%",  y: "38%" },
-  "Asia-Pacific":   { x: "78%",  y: "35%" },
-  "Global":         { x: "50%",  y: "45%" },
+  "North America": { x: "22%", y: "30%" },
+  "Latin America": { x: "28%", y: "65%" },
+  Europe: { x: "50%", y: "25%" },
+  Africa: { x: "50%", y: "58%" },
+  "Middle East": { x: "58%", y: "38%" },
+  "Asia-Pacific": { x: "78%", y: "35%" },
+  Global: { x: "50%", y: "45%" },
 };
 
 /* Hotspot dot positions (cx/cy in SVG viewBox units 0–1000 x 0–500) */
 const REGION_DOT = {
-  "North America":  { cx: 220, cy: 150 },
-  "Latin America":  { cx: 280, cy: 330 },
-  "Europe":         { cx: 500, cy: 125 },
-  "Africa":         { cx: 500, cy: 290 },
-  "Middle East":    { cx: 580, cy: 190 },
-  "Asia-Pacific":   { cx: 780, cy: 175 },
-  "Global":         { cx: 500, cy: 225 },
+  "North America": { cx: 220, cy: 150 },
+  "Latin America": { cx: 280, cy: 330 },
+  Europe: { cx: 500, cy: 125 },
+  Africa: { cx: 500, cy: 290 },
+  "Middle East": { cx: 580, cy: 190 },
+  "Asia-Pacific": { cx: 780, cy: 175 },
+  Global: { cx: 500, cy: 225 },
 };
 
 function glowLayer(region) {
@@ -343,12 +377,7 @@ function WorldMapSilhouette({ region }) {
         strokeWidth="1"
       />
       {/* solid core dot */}
-      <circle
-        cx={dot.cx}
-        cy={dot.cy}
-        r="4"
-        fill="rgba(220, 0, 0, 0.95)"
-      />
+      <circle cx={dot.cx} cy={dot.cy} r="4" fill="rgba(220, 0, 0, 0.95)" />
     </svg>
   );
 }
@@ -475,18 +504,7 @@ export default function HeroSplit({ items = [], loading }) {
         >
           {/* background layers */}
           <div style={bgBase} />
-          <div style={bgGlow} />
-          <div style={bgStreak} />
-
-          {/* world map silhouette + drift */}
-          <div style={mapDriftWrap}>
-            <div style={mapOpacityWrap}>
-              <WorldMapSilhouette region={region} />
-            </div>
-          </div>
-
-          {/* red region glow overlay */}
-          <div style={glowLayer(region)} />
+                   
 
           {/* text overlay */}
           <div style={{ ...rightText, ...(fade ? fadeOut : fadeIn) }}>
@@ -531,9 +549,15 @@ export default function HeroSplit({ items = [], loading }) {
 
         /* slow drift for the map */
         @keyframes ntDrift {
-          0%   { transform: translate(0px,  0px)  scale(1.02); }
-          50%  { transform: translate(6px, -4px)  scale(1.02); }
-          100% { transform: translate(0px,  0px)  scale(1.02); }
+          0% {
+            transform: translate(0px, 0px) scale(1.02);
+          }
+          50% {
+            transform: translate(6px, -4px) scale(1.02);
+          }
+          100% {
+            transform: translate(0px, 0px) scale(1.02);
+          }
         }
       `}</style>
     </section>
@@ -615,14 +639,10 @@ const heroClickable = {
 const bgBase = {
   position: "absolute",
   inset: 0,
-  background: "linear-gradient(135deg, #0B1120, #111827)",
-};
-
-const bgGlow = {
-  position: "absolute",
-  inset: 0,
-  background:
-    "radial-gradient(circle at 80% 18%, rgba(196, 0, 0, 0.10), transparent 52%)",
+  backgroundImage: "url('/banners/world.jpg')",
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
 };
 
 const bgStreak = {
@@ -644,7 +664,7 @@ const mapDriftWrap = {
 const mapOpacityWrap = {
   position: "absolute",
   inset: 0,
-  opacity: 0.14,   // slightly more visible than before (was 0.06)
+  opacity: 0.14, // slightly more visible than before (was 0.06)
 };
 
 const rightText = {
