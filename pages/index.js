@@ -163,16 +163,16 @@ export default function Home() {
         </div>
       )}
 
-      {/* TRENDING */}
-      <h2 style={sectionTitle}>Trending</h2>
+      {/* LATEST */}
+      <h2 style={sectionTitle}>Latest News</h2>
       <div className="newsGrid">
         {trending.map((item) => (
           <ArticleCard key={item.id} item={item} />
         ))}
       </div>
 
-      {/* LATEST */}
-      <h2 style={sectionTitle}>Latest News</h2>
+      {/* TRENDING */}
+      <h2 style={sectionTitle}>Trending</h2>
       <div className="newsGrid">
         {latest.slice(0, 20).map((item, index) => (
           <>
