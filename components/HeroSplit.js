@@ -94,7 +94,7 @@ function generateIntelLine(item) {
   if (/(cyber|hack|breach|data leak|ransomware)/.test(text))
     return "Cyber risk signal detected. Watch for attribution and systemic impact.";
   if (
-    /(artificial intelligence|ai model|ai system|semiconductor|microchip|chipmaker|cybersecurity|data breach|ransomware|hack)/.test(
+    /\b(artificial intelligence|semiconductor|microchip|chipmaker|openai|chatgpt|nvidia|intel|amd|tsmc)\b/.test(
       text,
     )
   )
