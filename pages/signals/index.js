@@ -1,13 +1,17 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import RegionIntelligencePanel from "../../components/RegionIntelligencePanel";
 import TopNav from "../../components/TopNav";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
 const GlobalHeatMap = dynamic(
   () => import("../../components/GlobalHeatMap"),
+  { ssr: false }
+);
+
+const RegionIntelligencePanel = dynamic(
+  () => import("../../components/RegionIntelligencePanel"),
   { ssr: false }
 );
 
