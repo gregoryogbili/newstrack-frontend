@@ -41,13 +41,31 @@ export default function Home() {
   }
 
   useEffect(() => {
-    fetch(`${API}/feed`)
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+
+    fetch(`${API}/feed`, { signal: controller.signal })
       .then((res) => res.json())
       .then((data) => {
         setFeed(Array.isArray(data) ? data : []);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        if (err.name === "AbortError") {
+          console.warn("Feed timed out — backend waking up, retrying...");
+          setTimeout(() => {
+            fetch(`${API}/feed`)
+              .then((r) => r.json())
+              .then((data) => setFeed(Array.isArray(data) ? data : []))
+              .finally(() => setLoading(false));
+          }, 5000);
+        } else {
+          setLoading(false);
+        }
+      })
+      .finally(() => clearTimeout(timeout));
+
+    return () => controller.abort();
   }, []);
 
   const sorted = useMemo(() => {

@@ -20,7 +20,7 @@ export default function LivePage() {
         </div>
 
         <div style={callOutBox}>
-          <h2>📣 Are You an Independent Journalist?</h2>
+          <h2>Are You an Independent Journalist?</h2>
           <p style={{ marginTop: 12, opacity: 0.85 }}>
             NewsTrac is building a global network of courageous, accountable,
             and fiercely independent journalists.
@@ -47,7 +47,7 @@ const container = {
   margin: "0 auto",
   padding: "80px 20px",
   minHeight: "100vh",
-  background: "#0c0f14",
+  background: "#08121c",
   color: "#fff",
 };
 
@@ -57,23 +57,28 @@ const title = {
 };
 
 const noticeBox = {
-  background: "rgba(255,255,255,0.05)",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
   padding: "40px",
   borderRadius: "12px",
   marginBottom: "50px",
   border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
 };
 
 const callOutBox = {
-  background: "linear-gradient(135deg, #10151d, #0d1117)",
-  padding: "50px",
-  borderRadius: "16px",
-  border: "1px solid rgba(196,0,0,0.35)",
+  background:
+    "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+  padding: "40px",
+  borderRadius: "12px",
+  marginBottom: "50px",
+  border: "1px solid rgba(255,255,255,0.08)",
+  boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
 };
 
 const applyButton = {
-  marginTop: "25px",
-  padding: "14px 28px",
+  marginTop: "40px",
+  padding: "12px 22px",
   background: "#c40000",
   color: "#ffffff",
   border: "none",

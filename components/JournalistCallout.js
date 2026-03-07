@@ -22,8 +22,8 @@ const wrap = {
   marginBottom: 40,
   borderRadius: 16,
   padding: "40px 20px",
-  background: "linear-gradient(135deg, #10151d, #0d1117)",
-  border: "1px solid rgba(0,200,255,0.25)",
+  background: "linear-gradient(135deg, #0b1a2b, #13293d)",
+  border: "1px solid rgba(255,255,255,0.08)",
   textAlign: "center",
   color: "#fff"
 };
