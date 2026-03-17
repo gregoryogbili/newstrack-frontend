@@ -477,13 +477,17 @@ export default function HeroSplit({ items = [], loading }) {
               : "Developing story — click to read the full article."}
           </p>
 
-          <button
-            style={leftBtn}
+          <div
+            style={leftLink}
             onClick={() => openFull(leftItem)}
-            disabled={!leftItem}
+            role="link"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") openFull(leftItem);
+            }}
           >
             Read Full Article →
-          </button>
+          </div>
         </div>
       </div>
 
@@ -575,10 +579,11 @@ function trim(t, n) {
 const wrap = { gap: 14, marginBottom: 22 };
 
 const left = {
-  border: "1px solid #eee",
-  borderRadius: 14,
+  border: "1px solid #e5e7eb",
+  borderRadius: 6,
   padding: 16,
-  background: "#fff",
+  background: "#ffffff",
+  color: "#111827",
   minHeight: 260,
   display: "flex",
   flexDirection: "column",
@@ -593,33 +598,43 @@ const leftBody = {
 };
 
 const leftTitle = {
-  fontSize: 22,
+  fontSize: 24,
   fontWeight: 900,
   lineHeight: 1.15,
-  margin: "6px 0 10px",
+  color: "#111827",
 };
 
 const leftSnippet = {
-  color: "#444",
-  lineHeight: 1.5,
-  margin: "0 0 14px",
+  color: "#4b5563",
+  lineHeight: 1.45,
+  margin: "0",
+  fontSize: 14,
 };
 
 const leftBtn = {
-  border: "1px solid #111",
-  background: "#111",
-  color: "#fff",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: 36,
+  padding: "0 16px",
+  borderRadius: 8,
+  border: "1px solid #cfcfcf",
+  background: "#fff",
+  color: "#111",
   fontWeight: 800,
-  padding: "10px 18px",
-  borderRadius: 10,
+  fontSize: 14,
+  fontFamily: "'Inter', sans-serif",
+  lineHeight: "1",
+  letterSpacing: "0",
   cursor: "pointer",
   marginTop: "auto",
   alignSelf: "flex-start",
+  transition: "all 0.2s ease",
 };
 
 const right = {
   position: "relative",
-  borderRadius: 14,
+  borderRadius: 6,
   overflow: "hidden",
   minHeight: 260,
   border: "1px solid #1a1a2e",
@@ -747,4 +762,14 @@ const intelSummary = {
   fontSize: 13,
   lineHeight: 1.4,
   opacity: 0.92,
+};
+
+const leftLink = {
+  marginTop: "auto",
+  alignSelf: "flex-start",
+  fontSize: 14,
+  fontWeight: 700,
+  color: "#111827",
+  cursor: "pointer",
+  textDecoration: "none",
 };

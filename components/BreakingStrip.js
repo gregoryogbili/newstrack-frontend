@@ -47,7 +47,7 @@ const bar = {
   display: "flex",
   alignItems: "center",
   background: "#f5f5f5",      // light gray instead of black
-  color: "#111",              // black text
+  color: "#c40000",              // red text
   overflow: "hidden",
   marginTop: 24,
   marginBottom: 24,
@@ -77,6 +77,7 @@ const track = {
 const item = {
   marginRight: 60,
   fontSize: 14,
-  color: "#111",          // solid black
-  letterSpacing: "0.3px", // subtle refinement
+  color: "#c40000",
+  fontWeight: 700,
+  letterSpacing: "0.2px",
 };
