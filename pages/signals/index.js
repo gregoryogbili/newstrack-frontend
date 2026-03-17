@@ -5,19 +5,20 @@ import TopNav from "../../components/TopNav";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
-const GlobalHeatMap = dynamic(
-  () => import("../../components/GlobalHeatMap"),
-  { ssr: false }
-);
+const GlobalHeatMap = dynamic(() => import("../../components/GlobalHeatMap"), {
+  ssr: false,
+});
 
 const RegionIntelligencePanel = dynamic(
   () => import("../../components/RegionIntelligencePanel"),
-  { ssr: false }
+  { ssr: false },
 );
 
 const API = process.env.NEXT_PUBLIC_API;
 
 export default function SignalsDashboard() {
+  const [showNPIBreakdown, setShowNPIBreakdown] = useState(true);
+
   const [clusters, setClusters] = useState([]);
   const [overview, setOverview] = useState(null);
   const [windowParam, setWindowParam] = useState("6h");
@@ -51,7 +52,12 @@ export default function SignalsDashboard() {
   useEffect(() => {
     fetch(`${API}/signals/overview?window=${windowParam}`)
       .then((res) => res.json())
-      .then((data) => setOverview(data))
+      .then((data) => {
+        console.log("OVERVIEW DATA:", data);
+        console.log("BREAKDOWN:", data.narrativeBreakdown);
+
+        setOverview(data);
+      })
       .catch((err) => console.error("Overview fetch failed:", err));
   }, [windowParam]);
 
@@ -202,11 +208,104 @@ export default function SignalsDashboard() {
 
               <div style={metric}>{overview ? overview.npi : "--"}</div>
 
+              <div
+                style={{
+                  fontSize: 11,
+                  marginTop: 6,
+                  cursor: "pointer",
+                  color: "#60a5fa",
+                }}
+                onClick={() => setShowNPIBreakdown(!showNPIBreakdown)}
+              >
+                {showNPIBreakdown ? "Hide Drivers ↑" : "View Drivers →"}
+              </div>
+
               <div style={metricLabel}>Structural narrative pressure</div>
 
               <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
                 (0–100 scale, {windowParam} window)
               </div>
+
+              {showNPIBreakdown &&
+                Array.isArray(overview?.narrativeBreakdown) &&
+                overview.narrativeBreakdown.length > 0 &&
+                (() => {
+                  const total = overview.narrativeBreakdown.reduce(
+                    (sum, n) => sum + (n.score || 0),
+                    0,
+                  );
+
+                  return (
+                    <div
+                      style={{
+                        marginTop: 12,
+                        padding: 14,
+                        borderRadius: 10,
+                        background: "#020617",
+                        border: "1px solid rgba(56,189,248,0.25)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 800,
+                          marginBottom: 10,
+                          color: "#60a5fa",
+                          letterSpacing: 1,
+                        }}
+                      >
+                        Narrative Drivers
+                      </div>
+
+                      {overview.narrativeBreakdown.map((n, i) => {
+                        const percent = total > 0 ? (n.score / total) * 100 : 0;
+
+                        return (
+                          <div key={i} style={{ marginBottom: 10 }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                fontSize: 10,
+                                letterSpacing: "0.3px",
+                                marginBottom: 4,
+                                color: "#cbd5f5",
+                                fontWeight: 500,
+                              }}
+                            >
+                              <span>{n.label}</span>
+                              <span
+                                style={{ color: "#60a5fa", fontWeight: 600 }}
+                              >
+                                {Math.round(n.score)} ({Math.round(percent)}%)
+                              </span>
+                            </div>
+
+                            <div
+                              style={{
+                                height: 6,
+                                background: "#1e293b",
+                                borderRadius: 4,
+                                overflow: "hidden",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: `${percent}%`,
+                                  height: "100%",
+                                  background:
+                                    "linear-gradient(90deg, #60a5fa, #38bdf8)",
+                                  boxShadow: "0 0 8px rgba(56,189,248,0.6)",
+                                  transition: "width 0.4s ease",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
             </div>
 
             <div style={{ ...panel, gridColumn: "span 3" }}>

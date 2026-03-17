@@ -238,7 +238,7 @@ export default function Home() {
       }
 
       map[label].count += 1;
-      map[label].totalSignal += item.clusterCount || 1;
+      map[label].totalSignal += item.signalStrength || 0;
     }
 
     return Object.values(map)
@@ -386,6 +386,21 @@ export default function Home() {
             grid-template-columns: 1fr;
           }
         }
+
+        @keyframes pulse {
+          0% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.4;
+            transform: scale(1.1);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
       `}</style>
     </div>
   );
@@ -489,15 +504,20 @@ function ArticleCard({ item, index }) {
           fontWeight: "800",
           marginBottom: "6px",
           color:
-            signalState === "BREAKING"
-              ? "#c40000"
-              : signalState === "RISING"
-                ? "#ff8800"
-                : signalState === "STABLE"
-                  ? "#999"
-                  : signalState === "EARLY"
-                    ? "#777"
-                    : "#bbb",
+            signalState === "EXPLODING"
+              ? "#ff0000"
+              : signalState === "BREAKING"
+                ? "#c40000"
+                : signalState === "RISING"
+                  ? "#ff8800"
+                  : signalState === "STABLE"
+                    ? "#999"
+                    : signalState === "EARLY"
+                      ? "#777"
+                      : signalState === "COOLING"
+                        ? "#555"
+                        : "#bbb",
+          animation: signalState === "EXPLODING" ? "pulse 1s infinite" : "none",
         }}
       >
         {signalState}
