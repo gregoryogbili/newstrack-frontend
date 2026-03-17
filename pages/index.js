@@ -10,7 +10,82 @@ import SiteFooter from "../components/SiteFooter";
 import he from "he";
 import TopNav from "../components/TopNav";
 
+import OwnershipPanel from "../components/OwnershipPanel";
+
 const API = process.env.NEXT_PUBLIC_API;
+
+function detectNarrative(item) {
+  const text = `${item.headline || ""} ${item.summary || ""}`.toLowerCase();
+
+  if (
+    text.includes("ukraine") ||
+    text.includes("russia") ||
+    text.includes("gaza") ||
+    text.includes("israel") ||
+    text.includes("iran") ||
+    text.includes("missile") ||
+    text.includes("military") ||
+    text.includes("war") ||
+    text.includes("conflict")
+  ) {
+    return "Geopolitical Conflict";
+  }
+
+  if (
+    text.includes("inflation") ||
+    text.includes("interest rate") ||
+    text.includes("recession") ||
+    text.includes("economy") ||
+    text.includes("economic") ||
+    text.includes("market") ||
+    text.includes("stocks") ||
+    text.includes("oil") ||
+    text.includes("trade") ||
+    text.includes("tariff")
+  ) {
+    return "Economic Risk";
+  }
+
+  if (
+    text.includes("ai") ||
+    text.includes("artificial intelligence") ||
+    text.includes("openai") ||
+    text.includes("chip") ||
+    text.includes("nvidia") ||
+    text.includes("technology") ||
+    text.includes("tech") ||
+    text.includes("cyber") ||
+    text.includes("software")
+  ) {
+    return "Technology Shift";
+  }
+
+  if (
+    text.includes("election") ||
+    text.includes("government") ||
+    text.includes("president") ||
+    text.includes("prime minister") ||
+    text.includes("parliament") ||
+    text.includes("policy") ||
+    text.includes("labour") ||
+    text.includes("conservative")
+  ) {
+    return "Political Power";
+  }
+
+  if (
+    text.includes("storm") ||
+    text.includes("flood") ||
+    text.includes("earthquake") ||
+    text.includes("wildfire") ||
+    text.includes("climate") ||
+    text.includes("weather")
+  ) {
+    return "Climate / Disaster";
+  }
+
+  return "General Global News";
+}
 
 export default function Home() {
   const [feed, setFeed] = useState([]);
@@ -73,7 +148,7 @@ export default function Home() {
     const seen = new Set();
 
     for (const item of feed) {
-      const key = item.source_url || item.url || item.headline;
+      const key = item.cluster_key || item.headline;
 
       if (!seen.has(key)) {
         seen.add(key);
@@ -81,7 +156,59 @@ export default function Home() {
       }
     }
 
-    return unique;
+    const score = (item) => {
+      const cluster = item.clusterCount || 1;
+
+      const published = new Date(item.published_at || Date.now());
+      const hoursAgo = (Date.now() - published.getTime()) / (1000 * 60 * 60);
+
+      // 🧠 1. Freshness (decays over time)
+      const freshness = Math.max(0, 24 - hoursAgo);
+
+      // ⚡ 2. Velocity (fast spread = big signal)
+      const velocity = cluster / Math.max(1, hoursAgo);
+
+      // 🏛️ 3. Source credibility boost
+      let credibility = 0;
+
+      if (
+        item.source_name &&
+        ["BBC", "Reuters", "Financial Times", "Bloomberg"].some((s) =>
+          item.source_name.includes(s),
+        )
+      ) {
+        credibility += 15;
+      }
+
+      if (item.source_name?.includes("Reddit")) {
+        credibility -= 10;
+      }
+
+      // 🔥 4. Keyword impact (real-world intensity)
+      const text = `${item.headline || ""} ${item.summary || ""}`.toLowerCase();
+
+      let impact = 0;
+
+      if (/war|attack|missile|killed|explosion/.test(text)) impact += 25;
+      if (/election|government|president/.test(text)) impact += 15;
+      if (/economy|inflation|market|stocks/.test(text)) impact += 10;
+
+      // 🎯 FINAL SCORE
+      return (
+        cluster * 15 + // base signal
+        velocity * 20 + // how fast it spreads
+        freshness + // how recent
+        credibility + // trusted sources
+        impact // real-world importance
+      );
+    };
+
+    const enriched = unique.map((item) => ({
+      ...item,
+      signalStrength: Math.round(score(item)),
+    }));
+
+    return enriched.sort((a, b) => b.signalStrength - a.signalStrength);
   }, [feed]);
 
   const breakingItems = sorted.slice(0, 10); // top 10
@@ -93,7 +220,31 @@ export default function Home() {
     .filter((i) => !i.source_name.includes("Reddit"))
     .slice(16, 22);
   const trending = [...normalTrending, ...redditItems];
-  const latest = sorted.slice(24, 120); // everything else
+
+  const latest = sorted.slice(24, 120);
+
+  const narratives = useMemo(() => {
+    const map = {};
+
+    for (const item of sorted.slice(0, 40)) {
+      const label = detectNarrative(item);
+
+      if (!map[label]) {
+        map[label] = {
+          label,
+          count: 0,
+          totalSignal: 0,
+        };
+      }
+
+      map[label].count += 1;
+      map[label].totalSignal += item.clusterCount || 1;
+    }
+
+    return Object.values(map)
+      .sort((a, b) => b.totalSignal - a.totalSignal || b.count - a.count)
+      .slice(0, 3);
+  }, [sorted]);
 
   return (
     <div style={container}>
@@ -169,8 +320,8 @@ export default function Home() {
           </div>
 
           <div className="newsGrid">
-            {searchResults.map((item) => (
-              <ArticleCard key={item.id} item={item} />
+            {searchResults.map((item, index) => (
+              <ArticleCard key={item.id} item={item} index={index} />
             ))}
           </div>
         </div>
@@ -179,8 +330,8 @@ export default function Home() {
       {/* LATEST */}
       <h2 style={sectionTitle}>Latest News</h2>
       <div className="newsGrid">
-        {trending.map((item) => (
-          <ArticleCard key={item.id} item={item} />
+        {trending.map((item, index) => (
+          <ArticleCard key={item.id} item={item} index={index} />
         ))}
       </div>
 
@@ -189,7 +340,7 @@ export default function Home() {
       <div className="newsGrid">
         {latest.slice(0, 20).map((item, index) => (
           <>
-            <ArticleCard key={item.id} item={item} />
+            <ArticleCard key={item.id} item={item} index={index} />
             {index === 7 && <AdCard key="ad-1" />}
           </>
         ))}
@@ -200,7 +351,7 @@ export default function Home() {
       <div className="newsGrid">
         {latest.slice(20).map((item, index) => (
           <>
-            <ArticleCard key={item.id} item={item} />
+            <ArticleCard key={item.id} item={item} index={index} />
             {index === 3 && <AdCard key="ad-2" />}
           </>
         ))}
@@ -212,9 +363,16 @@ export default function Home() {
         .newsGrid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
+          grid-auto-rows: 1fr;
           gap: 22px;
           margin-bottom: 30px;
           align-items: stretch;
+        }
+
+        @media (max-width: 900px) {
+          .narrativeResponsive {
+            grid-template-columns: 1fr !important;
+          }
         }
 
         @media (max-width: 1000px) {
@@ -234,7 +392,8 @@ export default function Home() {
 }
 
 /* ARTICLE CARD */
-function ArticleCard({ item }) {
+
+function ArticleCard({ item, index }) {
   const openFull = () => {
     const url =
       item?.source_url ||
@@ -251,9 +410,115 @@ function ArticleCard({ item }) {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const signal = item.signalStrength || 0;
+  const cluster = item.clusterCount || 1;
+
+  const published = new Date(item.published_at || Date.now());
+  const hoursAgo = (Date.now() - published.getTime()) / (1000 * 60 * 60);
+
+  const velocity = cluster / Math.max(1, hoursAgo);
+
+  let signalState = "NOISE";
+
+  // 🔥 EXPLODING (fast spread)
+  if (velocity > 5 && signal > 60) {
+    signalState = "EXPLODING";
+  }
+
+  // 🔴 BREAKING
+  else if (signal >= 80) {
+    signalState = "BREAKING";
+  }
+
+  // 🟠 RISING
+  else if (signal >= 60) {
+    signalState = "RISING";
+  }
+
+  // ⚪ STABLE
+  else if (signal >= 40) {
+    signalState = "STABLE";
+  }
+
+  // 🔘 EARLY
+  else if (signal >= 20) {
+    signalState = "EARLY";
+  }
+
+  // 📉 COOLING (old but still visible)
+  if (hoursAgo > 12 && signal < 50) {
+    signalState = "COOLING";
+  }
+
   return (
-    <div style={card}>
+    <div
+      style={{
+        ...card,
+        position: "relative",
+      }}
+    >
+      <OwnershipPanel
+        source={item.source_name}
+        sourceUrl={
+          item.source_url ||
+          item.url ||
+          item.link ||
+          item.sourceUrl ||
+          item.original_url
+        }
+      />
+
       <h3 style={cardTitle}>{he.decode(item.headline)}</h3>
+
+      <div
+        style={{
+          fontSize: "11px",
+          fontWeight: "700",
+          color: "#c40000",
+          marginBottom: "4px",
+          textTransform: "uppercase",
+          letterSpacing: "0.4px",
+        }}
+      >
+        {detectNarrative(item)}
+      </div>
+
+      <div
+        style={{
+          fontSize: "11px",
+          fontWeight: "800",
+          marginBottom: "6px",
+          color:
+            signalState === "BREAKING"
+              ? "#c40000"
+              : signalState === "RISING"
+                ? "#ff8800"
+                : signalState === "STABLE"
+                  ? "#999"
+                  : signalState === "EARLY"
+                    ? "#777"
+                    : "#bbb",
+        }}
+      >
+        {signalState}
+      </div>
+
+      <div
+        style={{
+          fontSize: "12px",
+          fontWeight: "800",
+          marginBottom: "6px",
+          color:
+            (item.signalStrength || 0) >= 70
+              ? "#c40000"
+              : (item.signalStrength || 0) >= 40
+                ? "#ff8800"
+                : "#555",
+        }}
+      >
+        Signal: {item.signalStrength || 0}
+      </div>
+
       <p style={cardSnippet}>
         {item.summary
           ? he.decode(item.summary).slice(0, 130) + "..."
@@ -364,6 +629,66 @@ const sectionTitle = {
   paddingLeft: "10px",
 };
 
+const narrativeWrap = {
+  marginBottom: 28,
+  padding: "18px",
+  border: "1px solid #e2d6d6",
+  borderRadius: 12,
+  background: "linear-gradient(to right, #fff7f7, #ffffff)",
+};
+
+const narrativeLead = {
+  marginBottom: 16,
+};
+
+const narrativeKicker = {
+  fontSize: 11,
+  fontWeight: 800,
+  color: "#c40000",
+  letterSpacing: "0.8px",
+  marginBottom: 6,
+};
+
+const narrativeMain = {
+  fontSize: 28,
+  fontWeight: 800,
+  lineHeight: 1.15,
+  color: "#111",
+  fontFamily: "'Playfair Display', serif",
+  marginBottom: 6,
+};
+
+const narrativeSub = {
+  fontSize: 13,
+  color: "#666",
+};
+
+const narrativeGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: 14,
+};
+
+const narrativeCard = {
+  border: "1px solid #ecd0d0",
+  borderRadius: 10,
+  padding: 14,
+  background: "#fff",
+};
+
+const narrativeLabel = {
+  fontSize: 15,
+  fontWeight: 800,
+  color: "#111",
+  marginBottom: 8,
+};
+
+const narrativeMeta = {
+  fontSize: 12,
+  color: "#666",
+  marginBottom: 4,
+};
+
 /* CARD */
 
 const card = {
@@ -377,14 +702,16 @@ const card = {
   flexDirection: "column",
   justifyContent: "flex-start",
   boxSizing: "border-box",
+  transform: "scale(1)",
+  transition: "all 0.2s ease",
 };
 
 const cardTitle = {
   fontFamily: "'Playfair Display', serif",
   fontSize: 20,
-  fontWeight: 700,
-  marginBottom: 8,
-  lineHeight: 1.3,
+  fontWeight: 800,
+  marginBottom: 6,
+  lineHeight: 1.25,
 };
 
 const cardSnippet = {
