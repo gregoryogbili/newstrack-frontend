@@ -17,7 +17,7 @@ const RegionIntelligencePanel = dynamic(
 const API = process.env.NEXT_PUBLIC_API;
 
 export default function SignalsDashboard() {
-  const [showNPIBreakdown, setShowNPIBreakdown] = useState(true);
+  const [showNPIBreakdown, setShowNPIBreakdown] = useState(false);
 
   const [clusters, setClusters] = useState([]);
   const [overview, setOverview] = useState(null);
@@ -364,7 +364,7 @@ export default function SignalsDashboard() {
                 <div style={listItem}>Loading clusters...</div>
               ) : (
                 clusters
-                  .filter((c) => (c.divergenceScore ?? 0) >= 35)
+                  .filter((c) => (c.divergenceScore ?? 0) >= 60 && (c.sourceCount ?? c.sources ?? 0) >= 2)
                   .sort(
                     (a, b) =>
                       (b.divergenceScore ?? 0) - (a.divergenceScore ?? 0),
