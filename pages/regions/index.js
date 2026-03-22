@@ -81,9 +81,14 @@ function RegionBlock({ regionData }) {
 
   return (
     <div style={{ marginBottom: 18 }}>
-      <h2 style={sectionTitle}>{region}</h2>
-
-      <div style={regionSub}>Dominant Regional Signals</div>
+      <h2 style={sectionTitle}>
+        {region === "Other" ? "Global / Unclassified" : region}
+      </h2>
+      <div style={regionSub}>
+        {region === "Other"
+          ? "Stories without specific regional focus"
+          : "Dominant Regional Signals"}
+      </div>
 
       <div style={regionMeta}>
         Momentum: {momentum} · Narrative Structure: {narrativeStructure} ·

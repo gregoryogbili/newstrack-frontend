@@ -149,69 +149,37 @@ export default function Home() {
 
     for (const item of feed) {
       const key = item.cluster_key || item.headline;
-
       if (!seen.has(key)) {
         seen.add(key);
         unique.push(item);
       }
     }
 
-    const score = (item) => {
-      const cluster = item.clusterCount || 1;
-
-      const published = new Date(item.published_at || Date.now());
-      const hoursAgo = (Date.now() - published.getTime()) / (1000 * 60 * 60);
-
-      // 🧠 1. Freshness (decays over time)
-      const freshness = Math.max(0, 24 - hoursAgo);
-
-      // ⚡ 2. Velocity (fast spread = big signal)
-      const velocity = cluster / Math.max(1, hoursAgo);
-
-      // 🏛️ 3. Source credibility boost
-      let credibility = 0;
-
-      if (
-        item.source_name &&
-        ["BBC", "Reuters", "Financial Times", "Bloomberg"].some((s) =>
-          item.source_name.includes(s),
-        )
-      ) {
-        credibility += 15;
-      }
-
-      if (item.source_name?.includes("Reddit")) {
-        credibility -= 10;
-      }
-
-      // 🔥 4. Keyword impact (real-world intensity)
-      const text = `${item.headline || ""} ${item.summary || ""}`.toLowerCase();
-
-      let impact = 0;
-
-      if (/war|attack|missile|killed|explosion/.test(text)) impact += 25;
-      if (/election|government|president/.test(text)) impact += 15;
-      if (/economy|inflation|market|stocks/.test(text)) impact += 10;
-
-      // 🎯 FINAL SCORE
-      return (
-        cluster * 15 + // base signal
-        velocity * 20 + // how fast it spreads
-        freshness + // how recent
-        credibility + // trusted sources
-        impact // real-world importance
-      );
-    };
-
-    const enriched = unique.map((item) => ({
-      ...item,
-      signalStrength: Math.round(score(item)),
-    }));
-
-    return enriched.sort((a, b) => b.signalStrength - a.signalStrength);
+    // Trust backend ranking_score — it already knows cluster size,
+    // source credibility and freshness at query time
+    return unique
+      .map((item) => ({
+        ...item,
+        signalStrength: Math.round(
+          item.ranking_score || item.initial_score || 0,
+        ),
+      }))
+      .sort((a, b) => b.signalStrength - a.signalStrength);
   }, [feed]);
 
-  const breakingItems = sorted.slice(0, 10); // top 10
+  const breakingItems = (() => {
+    const seen = new Set();
+    const items = [];
+    for (const item of sorted) {
+      const key = item.cluster_key || item.headline;
+      if (!seen.has(key)) {
+        seen.add(key);
+        items.push(item);
+      }
+      if (items.length >= 10) break;
+    }
+    return items;
+  })();
   const heroItems = sorted.slice(10, 16); // next 6
   const redditItems = sorted
     .filter((i) => i.source_name.includes("Reddit"))
@@ -495,7 +463,7 @@ function ArticleCard({ item, index }) {
           letterSpacing: "0.4px",
         }}
       >
-        {detectNarrative(item)}
+        {item.narrativeLabel || detectNarrative(item)}
       </div>
 
       <div

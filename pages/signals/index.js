@@ -187,6 +187,21 @@ export default function SignalsDashboard() {
               <div style={metric}>
                 {overview ? overview.velocityIndex : "--"}
               </div>
+              {overview?.delta?.velocity !== null &&
+                overview?.delta?.velocity !== undefined && (
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      marginTop: 4,
+                      color:
+                        overview.delta.velocity > 0 ? "#ef4444" : "#22c55e",
+                    }}
+                  >
+                    {overview.delta.velocity > 0 ? "▲" : "▼"}{" "}
+                    {Math.abs(overview.delta.velocity)}% vs yesterday
+                  </div>
+                )}
               <div style={metricLabel}>Change in global narrative activity</div>
               <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
                 (0–100 scale, {windowParam} window)
@@ -325,6 +340,21 @@ export default function SignalsDashboard() {
               ) : (
                 <div>
                   <div style={metric}>{overview.economicRisk}</div>
+                  {overview?.delta?.econ !== null &&
+                    overview?.delta?.econ !== undefined && (
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                          marginTop: 4,
+                          color:
+                            overview.delta.econ > 0 ? "#ef4444" : "#22c55e",
+                        }}
+                      >
+                        {overview.delta.econ > 0 ? "▲" : "▼"}{" "}
+                        {Math.abs(overview.delta.econ)}% vs yesterday
+                      </div>
+                    )}
 
                   <div
                     style={{
@@ -364,7 +394,11 @@ export default function SignalsDashboard() {
                 <div style={listItem}>Loading clusters...</div>
               ) : (
                 clusters
-                  .filter((c) => (c.divergenceScore ?? 0) >= 60 && (c.sourceCount ?? c.sources ?? 0) >= 2)
+                  .filter(
+                    (c) =>
+                      (c.divergenceScore ?? 0) >= 60 &&
+                      (c.sourceCount ?? c.sources ?? 0) >= 2,
+                  )
                   .sort(
                     (a, b) =>
                       (b.divergenceScore ?? 0) - (a.divergenceScore ?? 0),
