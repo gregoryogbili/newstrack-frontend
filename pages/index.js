@@ -118,11 +118,11 @@ export default function Home() {
 
       if (isAIQuery) {
         const params = new URLSearchParams({
-          sort_by: filter.sort_by || "ranking_score",
+          sort_by: filter.sort_by || "initial_score",
           order: filter.order || "desc",
           hours: filter.hours || 24,
-          limit: filter.limit || 50,
-          ...(filter.category ? { category: filter.category } : {}),
+          limit: filter.limit || 20,
+          ...(filter.keyword ? { keyword: filter.keyword } : {}),
         });
         const res = await fetch(`${API}/articles/search?${params}`);
         const data = await res.json();

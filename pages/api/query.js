@@ -1,52 +1,53 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== "POST") return res.status(405).end();
 
   const { question } = req.body;
-  if (!question) return res.status(400).json({ error: 'No question provided' });
+  if (!question) return res.status(400).json({ error: "No question provided" });
 
   const prompt = `You are a query parser for a news intelligence database.
 Convert the user's natural language question into a JSON filter object.
 
-Available sort fields: ranking_score, initial_score, published_at
-Available categories: geopolitical, economic, technology, political, climate, general
+Available sort fields: initial_score, published_at
 Available time ranges in hours: 6, 12, 24, 48
 
 Rules:
-- "dangerous", "critical", "high risk", "most urgent" → sort_by: "ranking_score"
-- "latest", "newest", "recent" → sort_by: "published_at"  
-- "economic", "market", "financial" → category: "economic"
-- "war", "conflict", "military" → category: "geopolitical"
-- "last hour" → hours: 6, "today" → hours: 24, "this week" → hours: 48
-- Default: sort_by "ranking_score", order "desc", hours 24, limit 10
+- "dangerous", "critical", "high risk", "most urgent" → sort_by: "initial_score"
+- "latest", "newest", "recent" → sort_by: "published_at"
+- Extract a short keyword from the query to search headlines (e.g. "climate", "iran", "economy", "war", "oil")
+- If no specific topic, set keyword to null
+- Default: sort_by "initial_score", order "desc", hours 24, limit 20
 - Output ONLY valid JSON, no explanation, no markdown.
 
 Example output:
-{"sort_by":"ranking_score","order":"desc","hours":24,"category":null,"limit":10}`;
+{"sort_by":"initial_score","order":"desc","hours":24,"keyword":"climate","limit":20}`;
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          messages: [
+            { role: "system", content: prompt },
+            { role: "user", content: question },
+          ],
+          temperature: 0,
+          max_tokens: 100,
+        }),
       },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-        messages: [
-          { role: 'system', content: prompt },
-          { role: 'user', content: question }
-        ],
-        temperature: 0,
-        max_tokens: 100,
-      }),
-    });
+    );
 
     const data = await response.json();
-    const raw = data.choices?.[0]?.message?.content || '{}';
-    const filter = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    const raw = data.choices?.[0]?.message?.content || "{}";
+    const filter = JSON.parse(raw.replace(/```json|```/g, "").trim());
     res.json({ filter });
   } catch (err) {
-    console.error('Query parse error:', err);
-    res.status(500).json({ error: 'Failed to parse query' });
+    console.error("Query parse error:", err);
+    res.status(500).json({ error: "Failed to parse query" });
   }
 }
