@@ -104,9 +104,36 @@ export default function Home() {
 
     setSearchLoading(true);
     try {
-      const res = await fetch(`${API}/search?q=${encodeURIComponent(term)}`);
-      const data = await res.json();
-      setSearchResults(Array.isArray(data) ? data : data?.items || []);
+      // Step 1: parse intent via Groq (Vercel API route)
+      const parseRes = await fetch("/api/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: term }),
+      });
+      const { filter } = await parseRes.json();
+
+      // Step 2: if it looks like a natural language AI query, use the new endpoint
+      // Otherwise fall back to existing keyword search
+      const isAIQuery =
+        filter?.sort_by && !term.split(" ").every((w) => w.length < 5);
+
+      if (isAIQuery) {
+        const params = new URLSearchParams({
+          sort_by: filter.sort_by || "ranking_score",
+          order: filter.order || "desc",
+          hours: filter.hours || 24,
+          limit: filter.limit || 50,
+          ...(filter.category ? { category: filter.category } : {}),
+        });
+        const res = await fetch(`${API}/articles/search?${params}`);
+        const data = await res.json();
+        setSearchResults(Array.isArray(data) ? data : []);
+      } else {
+        // existing keyword search
+        const res = await fetch(`${API}/search?q=${encodeURIComponent(term)}`);
+        const data = await res.json();
+        setSearchResults(Array.isArray(data) ? data : data?.items || []);
+      }
     } catch (e) {
       console.error(e);
       setSearchResults([]);
