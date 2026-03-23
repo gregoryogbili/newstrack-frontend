@@ -114,8 +114,7 @@ export default function Home() {
 
       // Step 2: if it looks like a natural language AI query, use the new endpoint
       // Otherwise fall back to existing keyword search
-      const isAIQuery =
-        filter?.sort_by && !term.split(" ").every((w) => w.length < 5);
+      const isAIQuery = !!filter?.sort_by;
 
       if (isAIQuery) {
         const params = new URLSearchParams({
