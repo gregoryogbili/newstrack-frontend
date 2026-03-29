@@ -29,7 +29,7 @@ export default function Regions() {
       <TopNav
         active="/regions"
         logoImg={
-          <Image src="/logo.png" alt="NewsTrac Logo" width={40} height={40} />
+          <Image src="/logo.png" alt="NewsTrac Logo" width={34} height={34} />
         }
       />
 
