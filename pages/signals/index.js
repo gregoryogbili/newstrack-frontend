@@ -396,7 +396,7 @@ export default function SignalsDashboard() {
                 clusters
                   .filter(
                     (c) =>
-                      (c.divergenceScore ?? 0) >= 60 &&
+                      (c.divergenceScore ?? 0) >= 30 &&
                       (c.sourceCount ?? c.sources ?? 0) >= 2,
                   )
                   .sort(
