@@ -25,8 +25,7 @@ export default function LivePage() {
       />
 
       <div style={container}>
-        <h1 style={title}>LIVE — Intelligence Reports</h1>
-        
+                
         {loading && <div style={empty}>Loading reports...</div>}
 
         {!loading && posts.length === 0 && (
