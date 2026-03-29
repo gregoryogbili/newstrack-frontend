@@ -115,6 +115,7 @@ export default function TopNav({
               height: 32px;
               padding: 0 12px;
               font-size: 13px;
+              flex-shrink: 0;
             }
 
             .topnav-brand span:last-child {
