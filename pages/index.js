@@ -564,6 +564,8 @@ const container = {
   fontFamily: "'Inter', sans-serif",
   position: "relative",
   zIndex: 0,
+  boxSizing: "border-box",
+  width: "100%",
 };
 
 const header = {

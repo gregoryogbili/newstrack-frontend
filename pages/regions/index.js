@@ -186,6 +186,8 @@ const container = {
   margin: "0 auto",
   padding: "20px",
   fontFamily: "'Inter', sans-serif",
+  boxSizing: "border-box",
+  width: "100%",
 };
 
 const sectionTitle = {

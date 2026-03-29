@@ -157,7 +157,7 @@ export default function SignalsDashboard() {
               <div style={placeholder}>No regional signal data yet.</div>
             ) : (
               <div style={{ marginTop: 10 }}>
-                <div style={{ height: 420, marginTop: 10, width: "100%" }}>
+                <div style={{ height: "clamp(220px, 40vw, 420px)", marginTop: 10, width: "100%" }}>
                   <GlobalHeatMap
                     data={
                       overview.regionalSpread
