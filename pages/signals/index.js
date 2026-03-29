@@ -157,7 +157,13 @@ export default function SignalsDashboard() {
               <div style={placeholder}>No regional signal data yet.</div>
             ) : (
               <div style={{ marginTop: 10 }}>
-                <div style={{ height: "clamp(220px, 40vw, 420px)", marginTop: 10, width: "100%" }}>
+                <div
+                  style={{
+                    height: "clamp(220px, 40vw, 420px)",
+                    marginTop: 10,
+                    width: "100%",
+                  }}
+                >
                   <GlobalHeatMap
                     data={
                       overview.regionalSpread
@@ -528,6 +534,199 @@ export default function SignalsDashboard() {
                     ))}
                   </div>
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* ===== INTELLIGENCE BAND ===== */}
+          <div style={rowBand} className="rowBand">
+            {/* NARRATIVE WATCH */}
+            <div style={{ ...panel, gridColumn: "span 4" }}>
+              <div style={panelTitle}>🔍 Narrative Watch</div>
+              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
+                Stories absent from major media blocs
+              </div>
+              {!overview?.narrativeWatch?.length ? (
+                <div style={listItem}>No suppressed narratives detected</div>
+              ) : (
+                overview.narrativeWatch.map((w, i) => (
+                  <div key={i} style={{ marginBottom: 12 }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#e6edf3",
+                        marginBottom: 4,
+                      }}
+                    >
+                      {w.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "#f59e0b",
+                        marginBottom: 2,
+                      }}
+                    >
+                      Dominant: {w.dominantBloc} ({w.dominantCount} articles)
+                    </div>
+                    <div style={{ fontSize: 11, color: "#ef4444" }}>
+                      Absent from: {w.missingBlocs.join(", ")}
+                    </div>
+                    <div style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
+                      Suppression score: {w.suppressionScore}/100
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* GLOBAL TENSION INDEX */}
+            <div style={{ ...panel, gridColumn: "span 4" }}>
+              <div
+                style={{ ...panelTitle, cursor: "help" }}
+                onMouseEnter={() =>
+                  setTooltip(
+                    "Composite score combining narrative velocity, pressure, economic risk and acceleration density.",
+                  )
+                }
+                onMouseLeave={() => setTooltip(null)}
+              >
+                Global Tension Index ⓘ
+              </div>
+              <div
+                style={{
+                  fontSize: 52,
+                  fontWeight: 300,
+                  color: !overview
+                    ? "#38bdf8"
+                    : overview.globalTensionIndex >= 70
+                      ? "#ef4444"
+                      : overview.globalTensionIndex >= 40
+                        ? "#f59e0b"
+                        : "#22c55e",
+                  lineHeight: 1,
+                  marginBottom: 8,
+                }}
+              >
+                {overview ? overview.globalTensionIndex : "--"}
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: !overview
+                    ? "#94a3b8"
+                    : overview.globalTensionIndex >= 70
+                      ? "#ef4444"
+                      : overview.globalTensionIndex >= 40
+                        ? "#f59e0b"
+                        : "#22c55e",
+                  marginBottom: 8,
+                }}
+              >
+                {!overview
+                  ? ""
+                  : overview.globalTensionIndex >= 70
+                    ? "CRITICAL"
+                    : overview.globalTensionIndex >= 50
+                      ? "ELEVATED"
+                      : overview.globalTensionIndex >= 30
+                        ? "MODERATE"
+                        : "STABLE"}
+              </div>
+              <div style={metricLabel}>Composite global intelligence score</div>
+              <div style={{ ...metricLabel, fontSize: 11, opacity: 0.6 }}>
+                (0–100 scale, {windowParam} window)
+              </div>
+              <div style={{ marginTop: 16 }}>
+                {[
+                  { label: "Velocity", value: overview?.velocityIndex },
+                  { label: "Pressure", value: overview?.npi },
+                  { label: "Econ Risk", value: overview?.economicRisk },
+                ].map((item) => (
+                  <div key={item.label} style={{ marginBottom: 8 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: 10,
+                        marginBottom: 3,
+                        color: "#94a3b8",
+                      }}
+                    >
+                      <span>{item.label}</span>
+                      <span>{item.value ?? "--"}</span>
+                    </div>
+                    <div
+                      style={{
+                        height: 4,
+                        background: "#1e293b",
+                        borderRadius: 4,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${item.value ?? 0}%`,
+                          height: "100%",
+                          background:
+                            "linear-gradient(90deg, #60a5fa, #38bdf8)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* SOURCE TRUST LAYER */}
+            <div style={{ ...panel, gridColumn: "span 4" }}>
+              <div style={panelTitle}>📡 Source Activity</div>
+              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
+                Most active outlets this window
+              </div>
+              {!overview?.sourceTrust?.length ? (
+                <div style={listItem}>Loading sources...</div>
+              ) : (
+                overview.sourceTrust.map((s, i) => {
+                  const max = overview.sourceTrust[0]?.count || 1;
+                  const pct = Math.round((s.count / max) * 100);
+                  return (
+                    <div key={i} style={{ marginBottom: 8 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          fontSize: 11,
+                          marginBottom: 3,
+                        }}
+                      >
+                        <span style={{ color: "#e6edf3" }}>{s.name}</span>
+                        <span style={{ color: "#60a5fa", fontWeight: 600 }}>
+                          {s.count}
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          height: 4,
+                          background: "#1e293b",
+                          borderRadius: 4,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${pct}%`,
+                            height: "100%",
+                            background:
+                              "linear-gradient(90deg, #4ea1ff, #38bdf8)",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
           </div>
