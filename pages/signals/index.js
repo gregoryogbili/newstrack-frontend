@@ -541,7 +541,7 @@ export default function SignalsDashboard() {
           {/* ===== INTELLIGENCE BAND ===== */}
           <div style={rowBand} className="rowBand">
             {/* NARRATIVE WATCH */}
-            <div style={{ ...panel, gridColumn: "span 4" }}>
+            <div style={{ ...panel, gridColumn: "span 3" }}>
               <div style={panelTitle}>🔍 Narrative Watch</div>
               <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
                 Stories absent from major media blocs
@@ -582,7 +582,7 @@ export default function SignalsDashboard() {
             </div>
 
             {/* GLOBAL TENSION INDEX */}
-            <div style={{ ...panel, gridColumn: "span 4" }}>
+            <div style={{ ...panel, gridColumn: "span 3" }}>
               <div
                 style={{ ...panelTitle, cursor: "help" }}
                 onMouseEnter={() =>
@@ -681,7 +681,7 @@ export default function SignalsDashboard() {
             </div>
 
             {/* SOURCE TRUST LAYER */}
-            <div style={{ ...panel, gridColumn: "span 4" }}>
+            <div style={{ ...panel, gridColumn: "span 3" }}>
               <div style={panelTitle}>📡 Source Activity</div>
               <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
                 Most active outlets this window
@@ -727,6 +727,102 @@ export default function SignalsDashboard() {
                     </div>
                   );
                 })
+              )}
+            </div>
+
+            {/* NARRATIVE MOMENTUM */}
+            <div style={{ ...panel, gridColumn: "span 3" }}>
+              <div style={panelTitle}>📈 Narrative Momentum</div>
+              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
+                Rising vs falling story trends
+              </div>
+              {!clusters.length ? (
+                <div style={listItem}>Loading...</div>
+              ) : (
+                <>
+                  <div style={{ marginBottom: 12 }}>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: "#4ade80",
+                        marginBottom: 6,
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      ↑ RISING
+                    </div>
+                    {clusters
+                      .filter(
+                        (c) =>
+                          c.momentum === "rising" ||
+                          c.momentum === "accelerating",
+                      )
+                      .slice(0, 3)
+                      .map((c, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            fontSize: 12,
+                            color: "#e6edf3",
+                            marginBottom: 4,
+                            opacity: 0.9,
+                          }}
+                        >
+                          • {c.title}
+                        </div>
+                      ))}
+                    {clusters.filter(
+                      (c) =>
+                        c.momentum === "rising" ||
+                        c.momentum === "accelerating",
+                    ).length === 0 && (
+                      <div style={{ fontSize: 12, opacity: 0.5 }}>
+                        None detected
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: "#ef4444",
+                        marginBottom: 6,
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      ↓ FALLING
+                    </div>
+                    {clusters
+                      .filter(
+                        (c) =>
+                          c.momentum === "falling" || c.momentum === "cooling",
+                      )
+                      .slice(0, 3)
+                      .map((c, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            fontSize: 12,
+                            color: "#e6edf3",
+                            marginBottom: 4,
+                            opacity: 0.9,
+                          }}
+                        >
+                          • {c.title}
+                        </div>
+                      ))}
+                    {clusters.filter(
+                      (c) =>
+                        c.momentum === "falling" || c.momentum === "cooling",
+                    ).length === 0 && (
+                      <div style={{ fontSize: 12, opacity: 0.5 }}>
+                        None detected
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           </div>
