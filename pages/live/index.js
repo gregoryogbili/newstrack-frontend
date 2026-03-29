@@ -26,11 +26,7 @@ export default function LivePage() {
 
       <div style={container}>
         <h1 style={title}>LIVE — Intelligence Reports</h1>
-        <p style={subtitle}>
-          Live coverage from independent journalists and AI-powered intelligence
-          reports
-        </p>
-
+        
         {loading && <div style={empty}>Loading reports...</div>}
 
         {!loading && posts.length === 0 && (
