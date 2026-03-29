@@ -542,10 +542,8 @@ export default function SignalsDashboard() {
           <div style={rowBand} className="rowBand">
             {/* NARRATIVE WATCH */}
             <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>🔍 Narrative Watch</div>
-              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
-                Stories absent from major media blocs
-              </div>
+              <div style={panelTitle}>Narrative Watch</div>
+              <div style={metricLabel}>Stories absent from major media blocs</div>
               {!overview?.narrativeWatch?.length ? (
                 <div style={listItem}>No suppressed narratives detected</div>
               ) : (
@@ -596,7 +594,7 @@ export default function SignalsDashboard() {
               </div>
               <div
                 style={{
-                  fontSize: 52,
+                  fontSize: 32,
                   fontWeight: 300,
                   color: !overview
                     ? "#38bdf8"
@@ -682,10 +680,8 @@ export default function SignalsDashboard() {
 
             {/* SOURCE TRUST LAYER */}
             <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>📡 Source Activity</div>
-              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
-                Most active outlets this window
-              </div>
+              <div style={panelTitle}>Source Activity</div>
+              <div style={metricLabel}>Most active outlets this window</div>
               {!overview?.sourceTrust?.length ? (
                 <div style={listItem}>Loading sources...</div>
               ) : (
@@ -732,10 +728,8 @@ export default function SignalsDashboard() {
 
             {/* NARRATIVE MOMENTUM */}
             <div style={{ ...panel, gridColumn: "span 3" }}>
-              <div style={panelTitle}>📈 Narrative Momentum</div>
-              <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 10 }}>
-                Rising vs falling story trends
-              </div>
+              <div style={panelTitle}>Narrative Momentum</div>
+              <div style={metricLabel}>Rising vs falling story trends</div>
               {!clusters.length ? (
                 <div style={listItem}>Loading...</div>
               ) : (
