@@ -140,7 +140,7 @@ export default function SignalsDashboard() {
               borderRadius: 8,
               fontSize: 15,
               lineHeight: 1.6,
-              color: "#f59e0b",
+              color: "#e6edf3",
               borderLeft: "3px solid #f59e0b",
               fontWeight: 700,
             }}
