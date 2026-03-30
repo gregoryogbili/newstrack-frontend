@@ -543,9 +543,11 @@ export default function SignalsDashboard() {
             {/* NARRATIVE WATCH */}
             <div style={{ ...panel, gridColumn: "span 3" }}>
               <div style={panelTitle}>Narrative Watch</div>
-              <div style={metricLabel}>Stories absent from major media blocs</div>
+              <div style={metricLabel}>
+                Stories absent from major media blocs
+              </div>
               {!overview?.narrativeWatch?.length ? (
-                <div style={listItem}>No suppressed narratives detected</div>
+                <div style={metricLabel}>No suppressed narratives detected</div>
               ) : (
                 overview.narrativeWatch.map((w, i) => (
                   <div key={i} style={{ marginBottom: 12 }}>
@@ -683,7 +685,7 @@ export default function SignalsDashboard() {
               <div style={panelTitle}>Source Activity</div>
               <div style={metricLabel}>Most active outlets this window</div>
               {!overview?.sourceTrust?.length ? (
-                <div style={listItem}>Loading sources...</div>
+                <div style={metricLabel}>Loading sources...</div>
               ) : (
                 overview.sourceTrust.map((s, i) => {
                   const max = overview.sourceTrust[0]?.count || 1;
@@ -731,7 +733,7 @@ export default function SignalsDashboard() {
               <div style={panelTitle}>Narrative Momentum</div>
               <div style={metricLabel}>Rising vs falling story trends</div>
               {!clusters.length ? (
-                <div style={listItem}>Loading...</div>
+                <div style={metricLabel}>Loading...</div>
               ) : (
                 <>
                   <div style={{ marginBottom: 12 }}>
