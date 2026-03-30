@@ -290,7 +290,7 @@ export default function SignalsDashboard() {
                                 fontSize: 10,
                                 letterSpacing: "0.3px",
                                 marginBottom: 4,
-                                color: "#cbd5f5",
+                                color: "#94a3b8",
                                 fontWeight: 500,
                               }}
                             >
@@ -305,7 +305,7 @@ export default function SignalsDashboard() {
                             <div
                               style={{
                                 height: 6,
-                                background: "#1e293b",
+                                background: "#0f172a",
                                 borderRadius: 4,
                                 overflow: "hidden",
                               }}
@@ -314,9 +314,7 @@ export default function SignalsDashboard() {
                                 style={{
                                   width: `${percent}%`,
                                   height: "100%",
-                                  background:
-                                    "linear-gradient(90deg, #60a5fa, #38bdf8)",
-                                  boxShadow: "0 0 8px rgba(56,189,248,0.6)",
+                                  background: "#334155",
                                   transition: "width 0.4s ease",
                                 }}
                               />
@@ -555,7 +553,7 @@ export default function SignalsDashboard() {
                       style={{
                         fontSize: 13,
                         fontWeight: 600,
-                        color: "#e6edf3",
+                        color: "#e2e8f0",
                         marginBottom: 4,
                       }}
                     >
@@ -564,13 +562,13 @@ export default function SignalsDashboard() {
                     <div
                       style={{
                         fontSize: 11,
-                        color: "#f59e0b",
+                        color: "#94a3b8",
                         marginBottom: 2,
                       }}
                     >
                       Dominant: {w.dominantBloc} ({w.dominantCount} articles)
                     </div>
-                    <div style={{ fontSize: 11, color: "#ef4444" }}>
+                    <div style={{ fontSize: 11, color: "#94a3b8" }}>
                       Absent from: {w.missingBlocs.join(", ")}
                     </div>
                     <div style={{ fontSize: 10, opacity: 0.5, marginTop: 2 }}>
@@ -700,7 +698,7 @@ export default function SignalsDashboard() {
                           marginBottom: 3,
                         }}
                       >
-                        <span style={{ color: "#e6edf3" }}>{s.name}</span>
+                        <span style={{ color: "#e2e8f0" }}>{s.name}</span>
                         <span style={{ color: "#60a5fa", fontWeight: 600 }}>
                           {s.count}
                         </span>
@@ -718,7 +716,7 @@ export default function SignalsDashboard() {
                             width: `${pct}%`,
                             height: "100%",
                             background:
-                              "linear-gradient(90deg, #4ea1ff, #38bdf8)",
+                              "linear-gradient(90deg, #60a5fa, #38bdf8)",
                           }}
                         />
                       </div>
@@ -760,7 +758,7 @@ export default function SignalsDashboard() {
                           key={i}
                           style={{
                             fontSize: 12,
-                            color: "#e6edf3",
+                            color: "#e2e8f0",
                             marginBottom: 4,
                             opacity: 0.9,
                           }}
@@ -801,7 +799,7 @@ export default function SignalsDashboard() {
                           key={i}
                           style={{
                             fontSize: 12,
-                            color: "#e6edf3",
+                            color: "#e2e8f0",
                             marginBottom: 4,
                             opacity: 0.9,
                           }}
@@ -1124,7 +1122,7 @@ const metricLabel = {
 const listItem = {
   fontSize: 14,
   marginBottom: 8,
-  color: "#f59e0b",
+  color: "#e2e8f0",
 };
 
 const placeholder = {
