@@ -562,7 +562,7 @@ export default function SignalsDashboard() {
                     <div
                       style={{
                         fontSize: 11,
-                        color: "#94a3b8",
+                        color: "#e6edf3",
                         marginBottom: 2,
                       }}
                     >
@@ -698,7 +698,7 @@ export default function SignalsDashboard() {
                           marginBottom: 3,
                         }}
                       >
-                        <span style={{ color: "#e2e8f0" }}>{s.name}</span>
+                        <span style={{ color: "#e6edf3" }}>{s.name}</span>
                         <span style={{ color: "#60a5fa", fontWeight: 600 }}>
                           {s.count}
                         </span>
@@ -758,7 +758,7 @@ export default function SignalsDashboard() {
                           key={i}
                           style={{
                             fontSize: 12,
-                            color: "#e2e8f0",
+                            color: "#e6edf3",
                             marginBottom: 4,
                             opacity: 0.9,
                           }}
@@ -799,7 +799,7 @@ export default function SignalsDashboard() {
                           key={i}
                           style={{
                             fontSize: 12,
-                            color: "#e2e8f0",
+                            color: "#e6edf3",
                             marginBottom: 4,
                             opacity: 0.9,
                           }}
@@ -977,7 +977,7 @@ export default function SignalsDashboard() {
             padding: "10px 14px",
             borderRadius: 6,
             fontSize: 12,
-            color: "#e5e7eb",
+            color: "#e6edf3",
             border: "1px solid #334155",
             boxShadow: "0 4px 14px rgba(0,0,0,0.4)",
             maxWidth: 300,
@@ -1122,7 +1122,7 @@ const metricLabel = {
 const listItem = {
   fontSize: 14,
   marginBottom: 8,
-  color: "#e2e8f0",
+  color: "#e6edf3",
 };
 
 const placeholder = {
@@ -1182,6 +1182,7 @@ const clusterTitle = {
   fontWeight: 600,
   letterSpacing: 1,
   marginBottom: 8,
+  color: "#e6edf3",
 };
 
 const clusterMeta = {
@@ -1192,7 +1193,7 @@ const clusterMeta = {
 const clusterScore = {
   fontSize: 12,
   marginTop: 6,
-  color: "rgba(203,213,225,0.85)",
+  color: "#e6edf3",
 };
 
 const emergingTrend = { color: "#4ea1ff", fontWeight: 600 };
