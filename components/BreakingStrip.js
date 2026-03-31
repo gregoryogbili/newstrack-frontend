@@ -52,6 +52,8 @@ const bar = {
   marginTop: 24,
   marginBottom: 24,
   borderBottom: "1px solid #e2e2e2",  // subtle divider
+  width: "100%",
+  boxSizing: "border-box",  
 };
 
 const label = {

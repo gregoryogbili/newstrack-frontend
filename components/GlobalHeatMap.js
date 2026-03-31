@@ -133,8 +133,9 @@ export default function GlobalHeatMap({ data = [] }) {
       ref={mapContainer}
       style={{
         width: "100%",
-        height: "100%",
+        height: "clamp(220px, 40vw, 420px)",
         borderRadius: "8px",
+        boxSizing: "border-box",
       }}
     />
   );
