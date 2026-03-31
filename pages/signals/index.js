@@ -7,11 +7,19 @@ import dynamic from "next/dynamic";
 
 const GlobalHeatMap = dynamic(() => import("../../components/GlobalHeatMap"), {
   ssr: false,
+  loading: () => (
+    <p style={{ padding: "20px", color: "#999" }}>Loading map...</p>
+  ),
 });
 
 const RegionIntelligencePanel = dynamic(
   () => import("../../components/RegionIntelligencePanel"),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => (
+      <p style={{ padding: "20px", color: "#999" }}>Loading panel...</p>
+    ),
+  },
 );
 
 const API = process.env.NEXT_PUBLIC_API;
@@ -93,6 +101,17 @@ export default function SignalsDashboard() {
         />
 
         <link rel="canonical" href="https://newstrac.org/signals" />
+
+        <link
+          rel="preload"
+          href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.js"
+          as="script"
+        />
+        <link
+          rel="preload"
+          href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css"
+          as="style"
+        />
       </Head>
 
       <TopNav
