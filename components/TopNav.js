@@ -259,4 +259,4 @@ const loginBtn = {
   textDecoration: "none",
   fontWeight: 800,
   fontSize: 14,
-};
+};  
