@@ -269,8 +269,8 @@ export default function Home() {
           <Image
             src="/logo.png"
             alt="NewsTrac Logo"
-            width={34}
-            height={34}
+            width={40}
+            height={40}
             priority
           />
         }
