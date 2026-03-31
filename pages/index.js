@@ -241,7 +241,7 @@ export default function Home() {
   }, [sorted]);
 
   return (
-    <div style={container}>
+    <>
       <Head>
         <title>
           NewsTrac – Real-Time Global News, Geopolitics & Economic Risk
@@ -275,6 +275,7 @@ export default function Home() {
           />
         }
       />
+      <div style={container}>
 
       <BreakingStrip items={breakingItems} />
 
@@ -396,7 +397,8 @@ export default function Home() {
           }
         }
       `}</style>
-    </div>
+    </div>    
+  </>
   );
 }
 

@@ -21,22 +21,22 @@ export default function Regions() {
   }, []);
 
   return (
-    <div style={container}>
+    <>
       <Head>
         <title>Global Regions | NewsTrac</title>
       </Head>
-
       <TopNav
         active="/regions"
         logoImg={
           <Image src="/logo.png" alt="NewsTrac Logo" width={34} height={34} />
         }
       />
-
-      {regions.map((region) => (
-        <RegionBlock key={region.region} regionData={region} />
-      ))}
-    </div>
+      <div style={container}>
+        {regions.map((region) => (
+          <RegionBlock key={region.region} regionData={region} />
+        ))}
+      </div>
+    </>
   );
 }
 
