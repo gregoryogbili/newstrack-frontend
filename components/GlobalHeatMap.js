@@ -16,8 +16,8 @@ export default function GlobalHeatMap({ data = [] }) {
         container: mapContainer.current,
         style:
           "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-        center: [0, 15],
-        zoom: 1.15,
+        center: [0, 20],
+        zoom: 0.5,
       });
     }
 
