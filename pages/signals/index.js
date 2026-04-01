@@ -194,11 +194,22 @@ export default function SignalsDashboard() {
                   }}
                 >
                   <GlobalHeatMap
-                    data={
+                    data={(
                       overview.regionalSpread
                         ?.sort((a, b) => b.count - a.count)
                         ?.slice(0, 3) || []
-                    }
+                    )
+                      .map((region) => {
+                        const coords =
+                          REGION_COORDS[region.region] ||
+                          REGION_COORDS[region.country] ||
+                          REGION_COORDS[region.name] ||
+                          null;
+                        return coords
+                          ? { ...region, lat: coords.lat, lng: coords.lng }
+                          : null;
+                      })
+                      .filter(Boolean)}
                   />
                 </div>
               </div>
