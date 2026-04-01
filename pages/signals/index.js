@@ -37,6 +37,12 @@ export default function SignalsDashboard() {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [panelOpen, setPanelOpen] = useState(false);
 
+  const getMetricColor = (value) => {
+    if (value >= 70) return "#ef4444";
+    if (value >= 40) return "#f59e0b";
+    return "#22c55e";
+  };
+
   useEffect(() => {
     fetch(`${API}/clusters`)
       .then((res) => res.json())
@@ -235,7 +241,14 @@ export default function SignalsDashboard() {
               >
                 Signal Velocity Index ⓘ
               </div>
-              <div style={metric}>
+              <div
+                style={{
+                  ...metric,
+                  color: overview
+                    ? getMetricColor(overview.velocityIndex)
+                    : "#e8e4df",
+                }}
+              >
                 {overview ? overview.velocityIndex : "--"}
               </div>
               {overview?.delta?.velocity !== null &&
@@ -272,7 +285,14 @@ export default function SignalsDashboard() {
               >
                 Narrative Pressure Index ⓘ
               </div>
-              <div style={metric}>{overview ? overview.npi : "--"}</div>
+              <div
+                style={{
+                  ...metric,
+                  color: overview ? getMetricColor(overview.npi) : "#e8e4df",
+                }}
+              >
+                {overview ? overview.npi : "--"}
+              </div>
               <div
                 style={{
                   fontSize: 11,
@@ -381,7 +401,14 @@ export default function SignalsDashboard() {
                 <div style={metric}>--</div>
               ) : (
                 <div>
-                  <div style={metric}>{overview.economicRisk}</div>
+                  <div
+                    style={{
+                      ...metric,
+                      color: getMetricColor(overview.economicRisk),
+                    }}
+                  >
+                    {overview.economicRisk}
+                  </div>
                   {overview?.delta?.econ !== null &&
                     overview?.delta?.econ !== undefined && (
                       <div
@@ -554,7 +581,11 @@ export default function SignalsDashboard() {
                         });
                     }}
                   >
-                    <strong>{r.region}</strong>
+                    <strong
+                      style={{ color: getMetricColor(r.narrativePressure) }}
+                    >
+                      {r.region}
+                    </strong>
                     <div style={{ fontSize: 12, opacity: 0.85, marginTop: 6 }}>
                       Narrative Activity:{" "}
                       {r.narrativePressure > 70
