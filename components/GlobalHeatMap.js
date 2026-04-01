@@ -33,8 +33,8 @@ export default function GlobalHeatMap({ data = [] }) {
     map.touchZoomRotate.disable();
 
     // 🔒 Lock zoom level
-    map.setMinZoom(1.15);
-    map.setMaxZoom(1.15);
+    map.setMinZoom(0.5);
+    map.setMaxZoom(0.5);
 
     // 2) Inject pulse keyframes once
     if (!document.getElementById("map-pulse-style")) {
