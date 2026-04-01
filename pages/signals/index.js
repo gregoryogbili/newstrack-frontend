@@ -1196,7 +1196,7 @@ const panelLarge = {
   backgroundColor: "#0a0a0a",
   padding: 20,
   borderRadius: 8,
-  border: "1px solid #b80000",
+  border: "1px solid rgba(255,255,255,0.15)",
   boxShadow: "0 0 20px rgba(0,0,0,0.4)",
 };
 
