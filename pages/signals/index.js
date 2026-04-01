@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TopNav from "../../components/TopNav";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { REGION_COORDS } from "../../constants/regionCoords";
 
 const GlobalHeatMap = dynamic(() => import("../../components/GlobalHeatMap"), {
   ssr: false,
@@ -192,27 +193,12 @@ export default function SignalsDashboard() {
                     width: "100%",
                   }}
                 >
-                  {console.log(
-                    "regionalSpread sample:",
-                    overview.regionalSpread?.slice(0, 3),
-                  )}
-
                   <GlobalHeatMap
-                    data={(
+                    data={
                       overview.regionalSpread
                         ?.sort((a, b) => b.count - a.count)
                         ?.slice(0, 3) || []
-                    )
-                      .map((region) => {
-                        const coords =
-                          REGION_COORDS[region.region] ||
-                          REGION_COORDS[region.country] ||
-                          null;
-                        return coords
-                          ? { ...region, lat: coords.lat, lng: coords.lng }
-                          : null;
-                      })
-                      .filter(Boolean)}
+                    }
                   />
                 </div>
               </div>
