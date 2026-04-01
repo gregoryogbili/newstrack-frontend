@@ -7,7 +7,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 export default function GlobalHeatMap({ data = [] }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
-  const markersRef = useRef([]); // ✅ store Marker objects so we can remove them cleanly
+  const markersRef = useRef([]);
 
   useEffect(() => {
     // 1) Create map once
@@ -16,8 +16,9 @@ export default function GlobalHeatMap({ data = [] }) {
         container: mapContainer.current,
         style:
           "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-        center: [0, 20],
-        zoom: 0.5,
+        center: [15, 15],
+        zoom: 0.3,
+        renderWorldCopies: false,
       });
     }
 
@@ -33,8 +34,8 @@ export default function GlobalHeatMap({ data = [] }) {
     map.touchZoomRotate.disable();
 
     // 🔒 Lock zoom level
-    map.setMinZoom(0.5);
-    map.setMaxZoom(0.5);
+    map.setMinZoom(0.3);
+    map.setMaxZoom(0.3);
 
     // 2) Inject pulse keyframes once
     if (!document.getElementById("map-pulse-style")) {
@@ -67,7 +68,6 @@ export default function GlobalHeatMap({ data = [] }) {
         if (region?.lat == null || region?.lng == null) return;
 
         const count = region.count || 0;
-
         const lat = region.lat;
         const lng = region.lng;
 
