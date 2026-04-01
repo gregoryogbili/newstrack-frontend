@@ -57,6 +57,10 @@ export default function SignalsDashboard() {
       .then((data) => {
         console.log("OVERVIEW DATA:", data);
         console.log("BREAKDOWN:", data.narrativeBreakdown);
+        console.log(
+          "REGIONAL SPREAD SAMPLE:",
+          data.regionalSpread?.slice(0, 3),
+        );
         setOverview(data);
       })
       .catch((err) => console.error("Overview fetch failed:", err));
