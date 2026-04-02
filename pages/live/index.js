@@ -71,7 +71,7 @@ export default function LivePage() {
                   >
                     {post.source_name === "NewsTrac AI"
                       ? "NewsTrac AI"
-                      : post.source_name || "Independent Journalist"}
+                      : post.author_name || "Independent Journalist"}
                   </span>
                   {sentiment && (
                     <span

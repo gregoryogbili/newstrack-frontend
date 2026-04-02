@@ -503,21 +503,6 @@ export default function Dashboard() {
             />
 
             <label style={labelDark}>Content</label>
-            <div
-              style={{
-                fontSize: 12,
-                color: "#888",
-                marginBottom: 8,
-                lineHeight: 1.6,
-              }}
-            >
-              Separate paragraphs with a blank line.&nbsp;
-              <strong style={{ color: "#c40000" }}>Pull quote:</strong> wrap a
-              paragraph in "quote marks".&nbsp;
-              <strong style={{ color: "#c40000" }}>Section header:</strong>{" "}
-              write a short line under 55 characters with no punctuation at the
-              end.
-            </div>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
