@@ -13,6 +13,33 @@ function money(n) {
 }
 
 export default function Dashboard() {
+  function buildOpinionHTML(headline, content) {
+    const paragraphs = content
+      .split(/\n\n+/)
+      .filter((p) => p.trim())
+      .map((p) => p.trim());
+
+    const body = paragraphs
+      .map((p) => {
+        if (p.startsWith("PULLQUOTE:")) {
+          const quote = p.replace("PULLQUOTE:", "").trim();
+          return `<blockquote style="border-left:4px solid #c40000;margin:1.5rem 0;padding:0.8rem 1.25rem;background:#fef2f2;border-radius:0 6px 6px 0;"><p style="font-style:italic;font-size:18px;line-height:1.45;margin:0;color:#111;">${quote}</p></blockquote>`;
+        }
+        if (p.startsWith("SECTION:")) {
+          const title = p.replace("SECTION:", "").trim();
+          return `<p style="font-family:sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:#c40000;margin:2rem 0 0.5rem;">${title}</p>`;
+        }
+        return `<p style="font-size:16px;line-height:1.85;margin-bottom:1.3rem;color:#222;font-family:Georgia,serif;">${p}</p>`;
+      })
+      .join("");
+
+    return `<div style="font-family:Georgia,serif;max-width:680px;">
+    <p style="font-family:sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#888;border-left:3px solid #c40000;padding-left:10px;margin-bottom:1.2rem;font-weight:600;">Opinion · NewsTrac Editorial</p>
+    <p style="font-family:sans-serif;font-size:13px;color:#555;margin-bottom:2rem;">By <strong style="color:#111;">Gregory Ogbili</strong> · Founder, GENŌ Intelligentia · NewsTrac</p>
+    ${body}
+  </div>`;
+  }
+
   const router = useRouter();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -47,7 +74,7 @@ export default function Dashboard() {
         },
         body: JSON.stringify({
           headline,
-          content,
+          content: buildOpinionHTML(headline, content),
         }),
       });
 
@@ -398,7 +425,9 @@ export default function Dashboard() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               style={textareaWhite}
-              placeholder="Write your full story here..."
+              placeholder={
+                "Write paragraphs separated by blank lines.\n\nFor a pull quote, start a paragraph with: PULLQUOTE: your quote here\n\nFor a red section header, start a paragraph with: SECTION: Your Header Here"
+              }
             />
 
             <button onClick={submitPost} style={btnPrimary}>

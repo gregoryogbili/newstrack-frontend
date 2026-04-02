@@ -34,7 +34,6 @@ export default function LivePage() {
       />
 
       <div style={container}>
-
         {loading && <div style={emptyBox}>Loading intelligence reports...</div>}
 
         {!loading && posts.length === 0 && (
@@ -53,21 +52,35 @@ export default function LivePage() {
           {posts.map((post) => {
             let intel = null;
             if (post.source_name === "NewsTrac AI") {
-              try { intel = JSON.parse(post.description); } catch {}
+              try {
+                intel = JSON.parse(post.description);
+              } catch {}
             }
             const sentiment = intel?.strategic_sentiment;
-            const sentStyle = SENTIMENT_STYLES[sentiment] || SENTIMENT_STYLES.Neutral;
+            const sentStyle =
+              SENTIMENT_STYLES[sentiment] || SENTIMENT_STYLES.Neutral;
 
             return (
               <div key={post.id} style={card}>
-
                 {/* Tags row */}
                 <div style={tagsRow}>
-                  <span style={post.source_name === "NewsTrac AI" ? aiTag : journalistTag}>
-                    {post.source_name === "NewsTrac AI" ? "NewsTrac AI" : post.source_name || "Independent Journalist"}
+                  <span
+                    style={
+                      post.source_name === "NewsTrac AI" ? aiTag : journalistTag
+                    }
+                  >
+                    {post.source_name === "NewsTrac AI"
+                      ? "NewsTrac AI"
+                      : post.source_name || "Independent Journalist"}
                   </span>
                   {sentiment && (
-                    <span style={{ ...sentimentBadge, background: sentStyle.bg, color: sentStyle.color }}>
+                    <span
+                      style={{
+                        ...sentimentBadge,
+                        background: sentStyle.bg,
+                        color: sentStyle.color,
+                      }}
+                    >
                       {sentiment}
                     </span>
                   )}
@@ -99,25 +112,55 @@ export default function LivePage() {
 
                     {/* Watch Signal */}
                     {intel.watch_signal && (
-                      <div style={{ ...intelBlock, background: "#fffbeb", borderColor: "#fde68a" }}>
-                        <div style={{ ...intelLabel, color: "#92400e" }}>👁 Watch Signal</div>
-                        <p style={{ ...intelText, color: "#78350f", fontWeight: 600 }}>{intel.watch_signal}</p>
+                      <div
+                        style={{
+                          ...intelBlock,
+                          background: "#fffbeb",
+                          borderColor: "#fde68a",
+                        }}
+                      >
+                        <div style={{ ...intelLabel, color: "#92400e" }}>
+                          👁 Watch Signal
+                        </div>
+                        <p
+                          style={{
+                            ...intelText,
+                            color: "#78350f",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {intel.watch_signal}
+                        </p>
                       </div>
                     )}
                   </>
                 ) : (
-                  <p style={cardBody}>{post.description}</p>
+                  <div
+                    style={{ ...cardBody, fontSize: 15, lineHeight: 1.8 }}
+                    dangerouslySetInnerHTML={{ __html: post.description }}
+                  />
+                )}
+
+                {/* Disclaimer — journalist posts only */}
+                {post.source_name !== "NewsTrac AI" && (
+                  <div style={disclaimer}>
+                    The views expressed are those of the author. NewsTrac
+                    publishes perspectives across the political spectrum as part
+                    of its commitment to open geopolitical discourse.
+                  </div>
                 )}
 
                 {/* Meta */}
                 <div style={cardMeta}>
                   {new Date(post.created_at).toLocaleString("en-GB", {
-                    day: "numeric", month: "short",
-                    hour: "2-digit", minute: "2-digit",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
-                  {" · "}{post.views || 0} views
+                  {" · "}
+                  {post.views || 0} views
                 </div>
-
               </div>
             );
           })}
@@ -234,4 +277,14 @@ const emptyBox = {
   borderRadius: "6px",
   border: "1px solid #e5e7eb",
   background: "#f9fafb",
+};
+
+const disclaimer = {
+  fontSize: 12,
+  color: "#6b7280",
+  fontStyle: "italic",
+  borderTop: "1px solid #f3f4f6",
+  paddingTop: 10,
+  marginTop: 4,
+  lineHeight: 1.6,
 };
