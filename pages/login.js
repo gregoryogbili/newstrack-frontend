@@ -116,10 +116,10 @@ export default function Login() {
 
           {isRegister && (
             <>
-              <label style={label}>Full Name</label>
+              <label style={label}>Full Name <span style={{ fontSize: 11, opacity: 0.6 }}>(this will appear as your public byline on all articles)</span></label>
               <input
                 style={input}
-                placeholder="Your full name"
+                placeholder="e.g. Gregory Ogbili"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -179,8 +179,8 @@ const wrap = {
   display: "grid",
   placeItems: "center",
   padding: 16,
-  background: "#0b0f14",
-  color: "#fff",
+  background: "#ffffff",
+  color: "#111",
 };
 
 const card = {
@@ -188,19 +188,19 @@ const card = {
   maxWidth: 420,
   borderRadius: 16,
   padding: 22,
-  border: "1px solid rgba(255,255,255,0.10)",
-  background: "rgba(255,255,255,0.04)",
+  border: "1px solid #e2e2e2",
+  background: "#ffffff",
 };
 
-const label = { display: "block", marginTop: 12, marginBottom: 6, opacity: 0.8 };
+const label = { display: "block", marginTop: 12, marginBottom: 6, opacity: 0.8, color: "#333" };
 
 const input = {
   width: "100%",
   padding: 12,
   borderRadius: 12,
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(0,0,0,0.25)",
-  color: "#fff",
+  border: "1px solid #ccc",
+  background: "#fff",
+  color: "#111",
   outline: "none",
 };
 
@@ -210,20 +210,20 @@ const btn = {
   padding: 12,
   borderRadius: 12,
   border: "none",
-  background: "rgba(0,200,255,0.95)",
-  color: "#001018",
+  background: "#b80000",
+  color: "#ffffff",
   fontWeight: 700,
   cursor: "pointer",
 };
 
 const err = {
   marginTop: 12,
-  color: "#ff6b6b",
+  color: "#b80000",
   fontSize: 14,
 };
 
 const toggleLink = {
-  color: "#00c8ff",
+  color: "#b80000",
   cursor: "pointer",
   textDecoration: "underline",
 };

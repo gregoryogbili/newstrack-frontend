@@ -59,6 +59,7 @@ export default function Dashboard() {
   const [postMessage, setPostMessage] = useState("");
   const [region, setRegion] = useState("Global");
   const [country, setCountry] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   async function submitPost() {
     if (!headline || !content) {
@@ -470,51 +471,184 @@ export default function Dashboard() {
           <section style={panelWhite}>
             <h2 style={h2Dark}>Create New Story</h2>
 
-            <label style={labelDark}>Headline</label>
-            <input
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              style={inputWhite}
-              placeholder="Enter headline"
-            />
+            {/* Write / Preview toggle */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+              <button
+                onClick={() => setShowPreview(false)}
+                style={{
+                  ...toggleBtn,
+                  ...(showPreview ? {} : toggleBtnActive),
+                }}
+              >
+                Write
+              </button>
+              <button
+                onClick={() => setShowPreview(true)}
+                style={{
+                  ...toggleBtn,
+                  ...(showPreview ? toggleBtnActive : {}),
+                }}
+              >
+                Preview
+              </button>
+            </div>
 
-            <label style={labelDark}>Region</label>
-            <select
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              style={inputWhite}
+            {!showPreview ? (
+              <>
+                <label style={labelDark}>Headline</label>
+                <input
+                  value={headline}
+                  onChange={(e) => setHeadline(e.target.value)}
+                  style={inputWhite}
+                  placeholder="Enter headline"
+                />
+
+                <label style={labelDark}>Region</label>
+                <select
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  style={inputWhite}
+                >
+                  <option>Global</option>
+                  <option>Middle East</option>
+                  <option>Europe</option>
+                  <option>UK</option>
+                  <option>Africa</option>
+                  <option>Asia</option>
+                  <option>Americas</option>
+                  <option>Oceania</option>
+                </select>
+
+                <label style={labelDark}>Country (optional)</label>
+                <input
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  style={inputWhite}
+                  placeholder="e.g. Lebanon, Nigeria, Ukraine"
+                />
+
+                <label style={labelDark}>Content</label>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  style={{ ...textareaWhite, minHeight: 280 }}
+                  placeholder={
+                    "Write paragraphs separated by blank lines.\n\nFor a pull quote, start a paragraph with: PULLQUOTE: your quote here\n\nFor a red section header, start a paragraph with: SECTION: Your Header Here"
+                  }
+                />
+              </>
+            ) : (
+              <div
+                style={{
+                  border: "1px solid #e2e2e2",
+                  borderRadius: 8,
+                  padding: 24,
+                  minHeight: 300,
+                  background: "#fff",
+                }}
+              >
+                {!headline && !content ? (
+                  <p style={{ color: "#aaa", fontStyle: "italic" }}>
+                    Nothing to preview yet. Switch to Write and add your
+                    content.
+                  </p>
+                ) : (
+                  <>
+                    {/* Tag */}
+                    <p
+                      style={{
+                        fontFamily: "sans-serif",
+                        fontSize: 11,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "#888",
+                        borderLeft: "3px solid #c40000",
+                        paddingLeft: 10,
+                        marginBottom: 12,
+                        fontWeight: 600,
+                      }}
+                    >
+                      Independent Journalist · NewsTrac Editorial
+                    </p>
+                    {/* Headline */}
+                    {headline && (
+                      <h2
+                        style={{
+                          fontFamily: "Georgia, serif",
+                          fontSize: 26,
+                          fontWeight: 700,
+                          lineHeight: 1.2,
+                          marginBottom: 8,
+                          color: "#111",
+                        }}
+                      >
+                        {headline}
+                      </h2>
+                    )}
+                    {/* Byline */}
+                    <p
+                      style={{
+                        fontFamily: "sans-serif",
+                        fontSize: 13,
+                        color: "#555",
+                        marginBottom: 24,
+                        borderBottom: "1px solid #eee",
+                        paddingBottom: 12,
+                      }}
+                    >
+                      By{" "}
+                      <strong style={{ color: "#111" }}>
+                        {currentUser?.name || "Independent Journalist"}
+                      </strong>{" "}
+                      · NewsTrac
+                      {region && region !== "Global" && (
+                        <span style={{ marginLeft: 8, color: "#0369a1" }}>
+                          · {region}
+                          {country ? `, ${country}` : ""}
+                        </span>
+                      )}
+                    </p>
+                    {/* Formatted content */}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: buildOpinionHTML(headline, content)
+                          .replace(/<div[^>]*>/, "")
+                          .replace(/<\/div>$/, "")
+                          .replace(
+                            /<p style="font-family:sans-serif[^>]*>.*?<\/p>/,
+                            "",
+                          ),
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            )}
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                marginTop: 16,
+                flexWrap: "wrap",
+              }}
             >
-              <option>Global</option>
-              <option>Middle East</option>
-              <option>Europe</option>
-              <option>UK</option>
-              <option>Africa</option>
-              <option>Asia</option>
-              <option>Americas</option>
-              <option>Oceania</option>
-            </select>
-
-            <label style={labelDark}>Country (optional)</label>
-            <input
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              style={inputWhite}
-              placeholder="e.g. Lebanon, Nigeria, Ukraine"
-            />
-
-            <label style={labelDark}>Content</label>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              style={{ ...textareaWhite, minHeight: 280 }}
-              placeholder={
-                "Write paragraphs separated by blank lines.\n\nFor a pull quote, start a paragraph with: PULLQUOTE: your quote here\n\nFor a red section header, start a paragraph with: SECTION: Your Header Here"
-              }
-            />
-
-            <button onClick={submitPost} style={btnPrimary}>
-              Publish Story
-            </button>
+              <button
+                onClick={submitPost}
+                style={btnPrimary}
+                disabled={showPreview && (!headline || !content)}
+              >
+                Publish Story
+              </button>
+              {showPreview && (
+                <button
+                  onClick={() => setShowPreview(false)}
+                  style={{ ...btnPrimary, background: "#555" }}
+                >
+                  Edit
+                </button>
+              )}
+            </div>
 
             {postMessage && <div style={successBox}>{postMessage}</div>}
           </section>
@@ -709,4 +843,21 @@ const successBox = {
   borderRadius: 8,
   background: "#f3f3f3",
   color: "#111",
+};
+
+const toggleBtn = {
+  padding: "8px 18px",
+  borderRadius: 8,
+  border: "1px solid #ddd",
+  background: "#fff",
+  color: "#555",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: 500,
+};
+
+const toggleBtnActive = {
+  border: "1px solid #b80000",
+  background: "#b80000",
+  color: "#fff",
 };
