@@ -275,7 +275,7 @@ export default function Home() {
           />
         }
       />
-      <div style={container}>
+      <div style={{ ...container, paddingTop: 6 }}>
 
       <BreakingStrip items={breakingItems} />
 
