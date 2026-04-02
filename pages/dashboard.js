@@ -34,8 +34,7 @@ export default function Dashboard() {
       .join("");
 
     return `<div style="font-family:Georgia,serif;max-width:680px;">
-    <p style="font-family:sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#888;border-left:3px solid #c40000;padding-left:10px;margin-bottom:1.2rem;font-weight:600;">Opinion · NewsTrac Editorial</p>
-    <p style="font-family:sans-serif;font-size:13px;color:#555;margin-bottom:2rem;">By <strong style="color:#111;">Gregory Ogbili</strong> · Founder, GENŌ Intelligentia · NewsTrac</p>
+    <p style="font-family:sans-serif;font-size:13px;color:#555;margin-bottom:2rem;">By <strong style="color:#111;">${currentUser?.name || "Independent Journalist"}</strong> · NewsTrac</p>
     ${body}
   </div>`;
   }
@@ -58,6 +57,8 @@ export default function Dashboard() {
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");
   const [postMessage, setPostMessage] = useState("");
+  const [region, setRegion] = useState("Global");
+  const [country, setCountry] = useState("");
 
   async function submitPost() {
     if (!headline || !content) {
@@ -75,6 +76,8 @@ export default function Dashboard() {
         body: JSON.stringify({
           headline,
           content: buildOpinionHTML(headline, content),
+          region,
+          country,
         }),
       });
 
@@ -87,9 +90,28 @@ export default function Dashboard() {
       setPostMessage("Story published successfully.");
       setHeadline("");
       setContent("");
+      setRegion("Global");
+      setCountry("");
       loadJournalistPosts();
     } catch (err) {
       setPostMessage(err.message);
+    }
+  }
+
+  async function deletePost(postId) {
+    if (!confirm("Delete this article? This cannot be undone.")) return;
+    try {
+      const res = await fetch(
+        `${API}/journalists/${journalistId}/posts/${postId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (!res.ok) throw new Error("Delete failed");
+      loadJournalistPosts();
+    } catch (err) {
+      setError(err.message);
     }
   }
 
@@ -329,13 +351,49 @@ export default function Dashboard() {
               <div style={{ opacity: 0.75 }}>No posts yet.</div>
             ) : (
               journalistPosts.map((p) => (
-                <div key={p.id} style={card}>
+                <div
+                  key={p.id}
+                  style={{
+                    ...card,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
                   <a
                     href={`/posts/${p.id}`}
-                    style={{ color: "#111", textDecoration: "underline" }}
+                    style={{
+                      color: "#111",
+                      textDecoration: "underline",
+                      flex: 1,
+                    }}
                   >
                     <strong>{p.headline}</strong>
+                    {p.region && (
+                      <span
+                        style={{ marginLeft: 8, fontSize: 11, color: "#888" }}
+                      >
+                        {p.region}
+                        {p.country ? ` · ${p.country}` : ""}
+                      </span>
+                    )}
                   </a>
+                  <button
+                    onClick={() => deletePost(p.id)}
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: 6,
+                      border: "1px solid #ffcccc",
+                      background: "#ffeaea",
+                      color: "#b80000",
+                      cursor: "pointer",
+                      fontSize: 12,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               ))
             )}
@@ -420,11 +478,50 @@ export default function Dashboard() {
               placeholder="Enter headline"
             />
 
+            <label style={labelDark}>Region</label>
+            <select
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              style={inputWhite}
+            >
+              <option>Global</option>
+              <option>Middle East</option>
+              <option>Europe</option>
+              <option>UK</option>
+              <option>Africa</option>
+              <option>Asia</option>
+              <option>Americas</option>
+              <option>Oceania</option>
+            </select>
+
+            <label style={labelDark}>Country (optional)</label>
+            <input
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              style={inputWhite}
+              placeholder="e.g. Lebanon, Nigeria, Ukraine"
+            />
+
             <label style={labelDark}>Content</label>
+            <div
+              style={{
+                fontSize: 12,
+                color: "#888",
+                marginBottom: 8,
+                lineHeight: 1.6,
+              }}
+            >
+              Separate paragraphs with a blank line.&nbsp;
+              <strong style={{ color: "#c40000" }}>Pull quote:</strong> wrap a
+              paragraph in "quote marks".&nbsp;
+              <strong style={{ color: "#c40000" }}>Section header:</strong>{" "}
+              write a short line under 55 characters with no punctuation at the
+              end.
+            </div>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              style={textareaWhite}
+              style={{ ...textareaWhite, minHeight: 280 }}
               placeholder={
                 "Write paragraphs separated by blank lines.\n\nFor a pull quote, start a paragraph with: PULLQUOTE: your quote here\n\nFor a red section header, start a paragraph with: SECTION: Your Header Here"
               }
