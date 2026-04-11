@@ -15,6 +15,7 @@ const SENTIMENT_STYLES = {
 export default function LivePage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     fetch(`${API}/posts`)
@@ -26,6 +27,14 @@ export default function LivePage() {
       .catch(() => setLoading(false));
   }, []);
 
+  const refreshIntel = async () => {
+    setGenerating(true);
+    await fetch(`${API}/posts/generate`, { method: "POST" });
+    const data = await fetch(`${API}/posts`).then((r) => r.json());
+    setPosts(Array.isArray(data) ? data : []);
+    setGenerating(false);
+  };
+
   return (
     <>
       <TopNav
@@ -34,16 +43,37 @@ export default function LivePage() {
       />
 
       <div style={container}>
+        {/* Refresh button */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+          <button
+            onClick={refreshIntel}
+            disabled={generating}
+            style={{
+              padding: "8px 18px",
+              background: generating ? "#e5e7eb" : "#c40000",
+              color: generating ? "#9ca3af" : "#fff",
+              border: "none",
+              borderRadius: 8,
+              fontWeight: 800,
+              fontSize: 13,
+              cursor: generating ? "not-allowed" : "pointer",
+              letterSpacing: "0.4px",
+            }}
+          >
+            {generating ? "Analysing..." : "⚡ Refresh Intelligence"}
+          </button>
+        </div>
+
         {loading && <div style={emptyBox}>Loading intelligence reports...</div>}
 
         {!loading && posts.length === 0 && (
           <div style={emptyBox}>
             <h2 style={{ marginBottom: 8, fontSize: 18, fontWeight: 800 }}>
-              No live reports from independent journalists at this time.
+              No live reports at this time.
             </h2>
             <p style={{ color: "#6b7280", fontSize: 14 }}>
-              Please check back later for verified live coverage from our global
-              network of independent reporters.
+              Click "Refresh Intelligence" to generate analysis from current top
+              stories, or check back later for journalist reports.
             </p>
           </div>
         )}
