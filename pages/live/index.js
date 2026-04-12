@@ -50,7 +50,7 @@ export default function LivePage() {
             disabled={generating}
             style={{
               padding: "8px 18px",
-              background: generating ? "#e5e7eb" : "#c40000",
+              background: generating ? "#e5e7eb" : "#b80000",
               color: generating ? "#9ca3af" : "#fff",
               border: "none",
               borderRadius: 8,
