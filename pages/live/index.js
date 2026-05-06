@@ -16,22 +16,43 @@ export default function LivePage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchPosts = async () => {
+    setRefreshing(true);
+    try {
+      const data = await fetch(`${API}/posts`).then((r) => r.json());
+      setPosts(Array.isArray(data) ? data : []);
+      setLastUpdated(new Date());
+    } catch {}
+    setRefreshing(false);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetch(`${API}/posts`)
-      .then((r) => r.json())
-      .then((data) => {
-        setPosts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    fetchPosts();
+    const interval = setInterval(fetchPosts, 60000); // auto-refresh every 60s
+    return () => clearInterval(interval);
   }, []);
+
+  const timeAgo = (date) => {
+    if (!date) return "";
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 10) return "just now";
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} min ago`;
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ago`;
+  };
 
   const refreshIntel = async () => {
     setGenerating(true);
     await fetch(`${API}/posts/generate`, { method: "POST" });
     const data = await fetch(`${API}/posts`).then((r) => r.json());
     setPosts(Array.isArray(data) ? data : []);
+    setLastUpdated(new Date());
     setGenerating(false);
   };
 
@@ -43,26 +64,42 @@ export default function LivePage() {
       />
 
       <div style={container}>
-        {/* Refresh button */}
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-          <button
-            onClick={refreshIntel}
-            disabled={generating}
+        {/* Live status indicator */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 16,
+            fontSize: 12,
+            letterSpacing: "0.3px",
+          }}
+        >
+          <span
             style={{
-              padding: "8px 18px",
-              background: generating ? "#e5e7eb" : "#15803d",
-              color: generating ? "#9ca3af" : "#fff",
-              border: "none",
-              borderRadius: 8,
-              fontWeight: 800,
-              fontSize: 13,
-              cursor: generating ? "not-allowed" : "pointer",
-              letterSpacing: "0.4px",
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: refreshing ? "#c40000" : "#15803d",
+              animation: "newstracPulse 2s ease-in-out infinite",
+              display: "inline-block",
             }}
-          >
-            {generating ? "Analysing..." : "⚡ Refresh Intelligence"}
-          </button>
+          />
+          <span style={{ fontWeight: 600, color: "#1a1a1a" }}>
+            {refreshing ? "Updating..." : "Live"}
+          </span>
+          {lastUpdated && !refreshing && (
+            <span style={{ color: "#6b7280" }}>· Updated {timeAgo(lastUpdated)}</span>
+          )}
         </div>
+
+        <style jsx global>{`
+          @keyframes newstracPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+        `}</style>
 
         {loading && <div style={emptyBox}>Loading intelligence reports...</div>}
 
@@ -72,8 +109,9 @@ export default function LivePage() {
               No live reports at this time.
             </h2>
             <p style={{ color: "#6b7280", fontSize: 14 }}>
-              Click "Refresh Intelligence" to generate analysis from current top
-              stories, or check back later for journalist reports.
+              Intelligence reports refresh automatically. Check back shortly for
+              the latest analysis from current top stories or journalist
+              reports.
             </p>
           </div>
         )}
